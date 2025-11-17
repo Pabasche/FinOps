@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinOps Meme Generator</title>
+    <title>Amazon Stores Meme Generator</title>
     <style>
         * {
             margin: 0;
@@ -80,6 +80,7 @@
             padding: 40px;
             margin-bottom: 20px;
             background: linear-gradient(45deg, #FF6B35, #ff8c5f);
+            cursor: pointer;
         }
 
         .meme-text-top, .meme-text-bottom {
@@ -164,7 +165,7 @@
 
         .btn-personal { background: #10b981; }
         .btn-team { background: #f59e0b; }
-        .btn-random { background: #ef4444; }
+        .btn-discrete { background: #6b7280; }
         .btn-trending { background: #3b82f6; }
         .btn-ai { background: #8b5cf6; }
         .btn-funny { background: #ec4899; }
@@ -311,26 +312,25 @@
     <div class="container">
         <div class="header">
             <div class="live-badge">🔴 LIVE NOW</div>
-            <h1>💰 FinOps Meme Generator</h1>
-            <p class="subtitle">The most fun way to learn FinOps!</p>
+            <h1>Amazon Stores Meme Generator</h1>
+            <p class="subtitle">The most fun way to share team memes!</p>
             <button onclick="showAdminLogin()" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9em;">🔒 Admin</button>
         </div>
 
         <div class="main-content">
             <div class="meme-section">
                 <div style="position: relative;">
-                    <div id="memeImage" style="background: #f8f9fa; color: #666; font-size: 1.2em; text-align: center;">
+                    <div id="memeImage" onclick="nextMeme()" style="background: #f8f9fa; color: #666; font-size: 1.2em; text-align: center;">
                         <div>📤</div>
                         <div>Upload your first meme to get started!</div>
                         <div>Click "Upload Your Meme" below</div>
                     </div>
-                    <button id="deleteBtn" onclick="deleteMeme()" style="display: none; position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em;">🗑️ Delete</button>
-                </div>
-
-                <div class="swipe-controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <button onclick="previousMeme()" style="background: #667eea; color: white; border: none; padding: 10px 15px; border-radius: 50px; cursor: pointer; font-size: 1.2em;">← Previous</button>
-                    <span id="memeCounter" style="color: #666; font-weight: 600;">No memes yet</span>
-                    <button onclick="nextMeme()" style="background: #667eea; color: white; border: none; padding: 10px 15px; border-radius: 50px; cursor: pointer; font-size: 1.2em;">Next →</button>
+                    <div id="memeCreator" style="text-align: center; font-size: 0.8em; color: #999; margin-top: 5px; margin-bottom: 10px;"></div>
+                    <button onclick="previousMeme()" style="position: absolute; top: 10px; left: 10px; background: rgba(102, 126, 234, 0.9); color: white; border: none; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 10;">←</button>
+                    <button onclick="showCategorySelector()" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(107, 114, 128, 0.9); color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">📂 Select Team</button>
+                    <button onclick="nextMeme()" style="position: absolute; top: 10px; right: 10px; background: rgba(102, 126, 234, 0.9); color: white; border: none; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 10;">→</button>
+                    <span id="memeCounter" style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); color: white; font-weight: 600; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 15px; font-size: 0.9em; z-index: 10;">No memes yet</span>
+                    <button id="deleteBtn" onclick="deleteMeme()" style="display: none; position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em; z-index: 10;">🗑️ Delete</button>
                 </div>
 
                 <div class="vote-section">
@@ -357,8 +357,6 @@
                 <div class="button-grid">
                     <button class="meme-btn btn-personal" onclick="showUploadForm()">📤 Upload Your Meme</button>
                     <button class="meme-btn btn-team" onclick="showGifForm()">🎬 Add GIF with Text</button>
-                    <button class="meme-btn btn-random" onclick="showCategorySelector()">📂 Select Category</button>
-                    <button class="meme-btn btn-trending" onclick="showStats()">📊 View Stats</button>
                 </div>
             </div>
 
@@ -393,13 +391,16 @@
                 </div>
 
                 <div class="popular-card">
-                    <h3>🏆 Top Categories</h3>
+                    <h3>🏆 Top Teams</h3>
                     <div id="popularCategories">
-                        <div class="popular-item">Team meme - 0 uploads</div>
-                        <div class="popular-item">Cost Focus - 0 uploads</div>
-                        <div class="popular-item">Peak meme - 0 uploads</div>
-                        <div class="popular-item">Leadership meme - 0 uploads</div>
-                        <div class="popular-item">Random meme - 0 uploads</div>
+                        <div class="popular-item">FinOPS - 0 uploads</div>
+                        <div class="popular-item">Operations - 0 uploads</div>
+                        <div class="popular-item">DSP team - 0 uploads</div>
+                        <div class="popular-item">PXT - 0 uploads</div>
+                        <div class="popular-item">ACES - 0 uploads</div>
+                        <div class="popular-item">Retail - 0 uploads</div>
+                        <div class="popular-item">Advertising - 0 uploads</div>
+                        <div class="popular-item">Amazon Business - 0 uploads</div>
                     </div>
                 </div>
             </div>
@@ -437,14 +438,17 @@
                     <input type="file" id="imageFile" accept="image/*" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
                 </div>
                 <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Category:</label>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Team:</label>
                     <select id="memeCategory" required style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
-                        <option value="">Select a category...</option>
-                        <option value="Team meme">Team meme</option>
-                        <option value="Cost Focus">Cost Focus</option>
-                        <option value="Peak meme">Peak meme</option>
-                        <option value="Leadership meme">Leadership meme</option>
-                        <option value="Random meme">Random meme</option>
+                        <option value="">Select a team...</option>
+                        <option value="FinOPS">FinOPS</option>
+                        <option value="Operations">Operations</option>
+                        <option value="DSP team">DSP team</option>
+                        <option value="PXT">PXT</option>
+                        <option value="ACES">ACES</option>
+                        <option value="Retail">Retail</option>
+                        <option value="Advertising">Advertising</option>
+                        <option value="Amazon Business">Amazon Business</option>
                     </select>
                 </div>
                 <div style="margin-bottom: 20px;">
@@ -477,14 +481,17 @@
                     <input type="text" id="gifText" placeholder="Add context text for your GIF" required style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
                 </div>
                 <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Category:</label>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Team:</label>
                     <select id="gifCategory" required style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
-                        <option value="">Select a category...</option>
-                        <option value="Team meme">Team meme</option>
-                        <option value="Cost Focus">Cost Focus</option>
-                        <option value="Peak meme">Peak meme</option>
-                        <option value="Leadership meme">Leadership meme</option>
-                        <option value="Random meme">Random meme</option>
+                        <option value="">Select a team...</option>
+                        <option value="FinOPS">FinOPS</option>
+                        <option value="Operations">Operations</option>
+                        <option value="DSP team">DSP team</option>
+                        <option value="PXT">PXT</option>
+                        <option value="ACES">ACES</option>
+                        <option value="Retail">Retail</option>
+                        <option value="Advertising">Advertising</option>
+                        <option value="Amazon Business">Amazon Business</option>
                     </select>
                 </div>
                 <div style="margin-bottom: 20px;">
@@ -546,6 +553,7 @@
                 memeImage.style.color = '#666';
                 counter.textContent = 'No memes yet';
                 deleteBtn.style.display = 'none';
+                document.getElementById('memeCreator').textContent = '';
                 resetVoteButtons();
                 return;
             }
@@ -570,6 +578,14 @@
             }
 
             updateVoteDisplay(meme);
+            
+            // Show creator if provided and not Anonymous
+            const creatorElement = document.getElementById('memeCreator');
+            if (meme.uploader && meme.uploader !== 'Anonymous') {
+                creatorElement.textContent = `by ${meme.uploader}`;
+            } else {
+                creatorElement.textContent = '';
+            }
         }
 
         function updateVoteDisplay(meme) {
@@ -651,59 +667,6 @@
             displayCurrentMeme();
         }
 
-        function showCategorySelector() {
-            if (memes.length === 0) {
-                showNotification('No memes available yet!');
-                return;
-            }
-            
-            const categories = [...new Set(memes.map(m => m.category))];
-            if (categories.length === 0) {
-                showNotification('No categories available!');
-                return;
-            }
-            
-            let options = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
-            
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;';
-            modal.innerHTML = `
-                <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%;">
-                    <h3 style="margin-bottom: 20px;">📂 Select Category</h3>
-                    <select id="categorySelect" style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 1em; margin-bottom: 20px;">
-                        <option value="">Choose category...</option>
-                        ${options}
-                    </select>
-                    <div>
-                        <button onclick="filterByCategory()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 10px; font-weight: 600;">Show Category</button>
-                        <button onclick="document.body.removeChild(this.closest('div').parentElement.parentElement)" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancel</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            
-            window.filterByCategory = function() {
-                const selectedCategory = document.getElementById('categorySelect').value;
-                if (!selectedCategory) {
-                    showNotification('Please select a category!');
-                    return;
-                }
-                
-                const categoryMemes = memes.filter(m => m.category === selectedCategory);
-                if (categoryMemes.length === 0) {
-                    showNotification('No memes in this category!');
-                    return;
-                }
-                
-                const randomIndex = Math.floor(Math.random() * categoryMemes.length);
-                const selectedMeme = categoryMemes[randomIndex];
-                currentMemeIndex = memes.indexOf(selectedMeme);
-                displayCurrentMeme();
-                document.body.removeChild(modal);
-                showNotification(`📂 Showing ${selectedCategory} meme!`);
-            };
-        }
-
         function showUploadForm() {
             document.getElementById('uploadModal').style.display = 'flex';
         }
@@ -731,6 +694,60 @@
             document.getElementById('adminForm').reset();
         }
 
+        function showCategorySelector() {
+            const allCategories = ['FinOPS', 'Operations', 'DSP team', 'PXT', 'ACES', 'Retail', 'Advertising', 'Amazon Business'];
+            const availableCategories = allCategories.filter(cat => memes.some(m => m.category === cat));
+            
+            if (memes.length === 0) {
+                showNotification('No memes available yet!');
+                return;
+            }
+            
+            let options = '<option value="ALL" selected>ALL</option>' + availableCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;';
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%;">
+                    <h3 style="margin-bottom: 20px;">📂 Select Team</h3>
+                    <select id="categorySelect" style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 1em; margin-bottom: 20px;">
+                        ${options}
+                    </select>
+                    <div>
+                        <button onclick="filterByCategory()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 10px; font-weight: 600;">Show Team</button>
+                        <button onclick="document.body.removeChild(this.closest('div').parentElement.parentElement)" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancel</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            window.filterByCategory = function() {
+                const selectedCategory = document.getElementById('categorySelect').value;
+                
+                if (selectedCategory === 'ALL') {
+                    const randomIndex = Math.floor(Math.random() * memes.length);
+                    currentMemeIndex = randomIndex;
+                    displayCurrentMeme();
+                    document.body.removeChild(modal);
+                    showNotification('📂 Showing all memes!');
+                    return;
+                }
+                
+                const categoryMemes = memes.filter(m => m.category === selectedCategory);
+                if (categoryMemes.length === 0) {
+                    showNotification(`No memes in ${selectedCategory} team!`);
+                    return;
+                }
+                
+                const randomIndex = Math.floor(Math.random() * categoryMemes.length);
+                const selectedMeme = categoryMemes[randomIndex];
+                currentMemeIndex = memes.indexOf(selectedMeme);
+                displayCurrentMeme();
+                document.body.removeChild(modal);
+                showNotification(`📂 Showing ${selectedCategory} meme!`);
+            };
+        }
+
         // Upload form handler
         document.getElementById('uploadForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -745,7 +762,7 @@
             }
             
             if (!category) {
-                showNotification('Please select a category!');
+                showNotification('Please select a team!');
                 return;
             }
             
@@ -900,12 +917,12 @@
             
             const sortedCategories = Object.entries(categoryCounts)
                 .sort(([,a], [,b]) => b - a)
-                .slice(0, 5);
+                .slice(0, 8);
             
             const popularContainer = document.getElementById('popularCategories');
             popularContainer.innerHTML = '';
             
-            const allCategories = ['Team meme', 'Cost Focus', 'Peak meme', 'Leadership meme', 'Random meme'];
+            const allCategories = ['FinOPS', 'Operations', 'DSP team', 'PXT', 'ACES', 'Retail', 'Advertising', 'Amazon Business'];
             allCategories.forEach(category => {
                 const count = categoryCounts[category] || 0;
                 const item = document.createElement('div');
@@ -926,7 +943,7 @@
             const uniqueUploaders = new Set(memes.map(meme => meme.uploader)).size;
             const costSaved = totalVotes * 200;
             
-            alert(`📊 FinOps Meme Stats:\n\n` +
+            alert(`📊 Amazon Stores Meme Stats:\n\n` +
                   `🎭 Total Memes: ${memes.length}\n` +
                   `👥 Active Users: ${uniqueUploaders}\n` +
                   `😂 Total Votes: ${totalVotes}\n` +
@@ -940,20 +957,20 @@
         }
 
         function shareToSlack() {
-            const text = `Check out our FinOps Meme Generator! 🎭💰 ${window.location.href}`;
+            const text = `Check out our Amazon Stores Meme Generator! 🎭💰 ${window.location.href}`;
             window.open(`https://slack.com/intl/en-gb/`, '_blank');
             navigator.clipboard.writeText(text);
             showNotification('💬 Message copied! Paste it in Slack.');
         }
 
         function shareToTeams() {
-            const text = `Check out our FinOps Meme Generator! 🎭💰 ${window.location.href}`;
+            const text = `Check out our Amazon Stores Meme Generator! 🎭💰 ${window.location.href}`;
             navigator.clipboard.writeText(text);
             showNotification('👥 Message copied! Paste it in Teams.');
         }
 
         function shareToTwitter() {
-            const text = `Having fun with FinOps memes! 🎭💰 Check it out:`;
+            const text = `Having fun with Amazon Stores memes! 🎭💰 Check it out:`;
             const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
             window.open(url, '_blank');
         }
