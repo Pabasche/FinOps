@@ -26,7 +26,7 @@
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         .header h1 {
@@ -65,7 +65,7 @@
         .meme-section {
             background: white;
             border-radius: 15px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
@@ -78,7 +78,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 40px;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
             background: linear-gradient(45deg, #FF6B35, #ff8c5f);
             cursor: pointer;
         }
@@ -325,11 +325,12 @@
                         <div>Upload your first meme to get started!</div>
                         <div>Click "Upload Your Meme" below</div>
                     </div>
-                    <div id="memeCreator" style="text-align: center; font-size: 0.8em; color: #999; margin-top: 5px; margin-bottom: 10px;"></div>
+                    <div id="memeCreator" style="text-align: center; font-size: 0.8em; color: #999; margin-top: -10px; margin-bottom: 5px;"></div>
                     <button onclick="previousMeme()" style="position: absolute; top: 10px; left: 10px; background: rgba(102, 126, 234, 0.9); color: white; border: none; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 10;">←</button>
-                    <button onclick="showCategorySelector()" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(107, 114, 128, 0.9); color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">📂 Select Team</button>
+                    <button onclick="showCategorySelector()" style="position: absolute; top: 10px; left: 40%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">🟡 Team</button>
+                    <button onclick="showTypeSelector()" style="position: absolute; top: 10px; left: 60%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">⭐ Type</button>
                     <button onclick="nextMeme()" style="position: absolute; top: 10px; right: 10px; background: rgba(102, 126, 234, 0.9); color: white; border: none; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 10;">→</button>
-                    <span id="memeCounter" style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); color: white; font-weight: 600; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 15px; font-size: 0.9em; z-index: 10;">No memes yet</span>
+
                     <button id="deleteBtn" onclick="deleteMeme()" style="display: none; position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em; z-index: 10;">🗑️ Delete</button>
                 </div>
 
@@ -350,6 +351,9 @@
                         </button>
                         <button class="vote-btn" onclick="vote('thumbs-up')">
                             👍 <span class="vote-count" id="thumbs-up-count">0</span>
+                        </button>
+                        <button class="vote-btn" onclick="vote('facepalm')">
+                            🤦‍♂️ <span class="vote-count" id="facepalm-count">0</span>
                         </button>
                     </div>
                 </div>
@@ -551,7 +555,7 @@
                 `;
                 memeImage.style.background = '#f8f9fa';
                 memeImage.style.color = '#666';
-                counter.textContent = 'No memes yet';
+
                 deleteBtn.style.display = 'none';
                 document.getElementById('memeCreator').textContent = '';
                 resetVoteButtons();
@@ -559,7 +563,7 @@
             }
 
             const meme = memes[currentMemeIndex];
-            counter.textContent = `${currentMemeIndex + 1} of ${memes.length}`;
+
             deleteBtn.style.display = isAdmin ? 'block' : 'none';
 
             if (meme.type === 'gif') {
@@ -589,7 +593,7 @@
         }
 
         function updateVoteDisplay(meme) {
-            const voteTypes = ['fire', 'laugh', 'heart', 'mind-blown', 'thumbs-up'];
+            const voteTypes = ['fire', 'laugh', 'heart', 'mind-blown', 'thumbs-up', 'facepalm'];
             voteTypes.forEach(type => {
                 const countElement = document.getElementById(`${type}-count`);
                 const btnElement = countElement.parentElement;
@@ -606,7 +610,7 @@
         }
 
         function resetVoteButtons() {
-            const voteTypes = ['fire', 'laugh', 'heart', 'mind-blown', 'thumbs-up'];
+            const voteTypes = ['fire', 'laugh', 'heart', 'mind-blown', 'thumbs-up', 'facepalm'];
             voteTypes.forEach(type => {
                 const countElement = document.getElementById(`${type}-count`);
                 const btnElement = countElement.parentElement;
@@ -650,7 +654,8 @@
                 'laugh': '😂',
                 'heart': '❤️',
                 'mind-blown': '🤯',
-                'thumbs-up': '👍'
+                'thumbs-up': '👍',
+                'facepalm': '🤦‍♂️'
             };
             return emojis[type] || '👍';
         }
@@ -694,6 +699,70 @@
             document.getElementById('adminForm').reset();
         }
 
+        function showTypeSelector() {
+            if (memes.length === 0) {
+                showNotification('No memes available yet!');
+                return;
+            }
+            
+            const voteTypes = [
+                { key: 'ALL', emoji: '⭐', name: 'ALL' },
+                { key: 'fire', emoji: '🔥', name: 'Fire' },
+                { key: 'laugh', emoji: '😂', name: 'Laugh' },
+                { key: 'heart', emoji: '❤️', name: 'Heart' },
+                { key: 'mind-blown', emoji: '🤯', name: 'Mind Blown' },
+                { key: 'thumbs-up', emoji: '👍', name: 'Thumbs Up' },
+                { key: 'facepalm', emoji: '🤦‍♂️', name: 'Facepalm' }
+            ];
+            
+            let options = voteTypes.map(type => 
+                `<option value="${type.key}" ${type.key === 'ALL' ? 'selected' : ''}>${type.emoji} ${type.name}</option>`
+            ).join('');
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;';
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%;">
+                    <h3 style="margin-bottom: 20px;">⭐ Select Type</h3>
+                    <select id="typeSelect" style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 1em; margin-bottom: 20px;">
+                        ${options}
+                    </select>
+                    <div>
+                        <button onclick="filterByType()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 10px; font-weight: 600;">Show Type</button>
+                        <button onclick="document.body.removeChild(this.closest('div').parentElement.parentElement)" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancel</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            window.filterByType = function() {
+                const selectedType = document.getElementById('typeSelect').value;
+                
+                if (selectedType === 'ALL') {
+                    const randomIndex = Math.floor(Math.random() * memes.length);
+                    currentMemeIndex = randomIndex;
+                    displayCurrentMeme();
+                    document.body.removeChild(modal);
+                    showNotification('⭐ Showing all types!');
+                    return;
+                }
+                
+                const typeMemes = memes.filter(m => m.votes && m.votes[selectedType] && m.votes[selectedType] > 0);
+                if (typeMemes.length === 0) {
+                    showNotification(`No memes with ${selectedType} votes!`);
+                    return;
+                }
+                
+                const randomIndex = Math.floor(Math.random() * typeMemes.length);
+                const selectedMeme = typeMemes[randomIndex];
+                currentMemeIndex = memes.indexOf(selectedMeme);
+                displayCurrentMeme();
+                document.body.removeChild(modal);
+                const emoji = voteTypes.find(t => t.key === selectedType).emoji;
+                showNotification(`⭐ Showing ${emoji} rated memes!`);
+            };
+        }
+
         function showCategorySelector() {
             const allCategories = ['FinOPS', 'Operations', 'DSP team', 'PXT', 'ACES', 'Retail', 'Advertising', 'Amazon Business'];
             const availableCategories = allCategories.filter(cat => memes.some(m => m.category === cat));
@@ -709,7 +778,7 @@
             modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;';
             modal.innerHTML = `
                 <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%;">
-                    <h3 style="margin-bottom: 20px;">📂 Select Team</h3>
+                    <h3 style="margin-bottom: 20px;">🟡 Select Team</h3>
                     <select id="categorySelect" style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 1em; margin-bottom: 20px;">
                         ${options}
                     </select>
@@ -729,7 +798,7 @@
                     currentMemeIndex = randomIndex;
                     displayCurrentMeme();
                     document.body.removeChild(modal);
-                    showNotification('📂 Showing all memes!');
+                    showNotification('🟡 Showing all memes!');
                     return;
                 }
                 
@@ -744,7 +813,7 @@
                 currentMemeIndex = memes.indexOf(selectedMeme);
                 displayCurrentMeme();
                 document.body.removeChild(modal);
-                showNotification(`📂 Showing ${selectedCategory} meme!`);
+                showNotification(`🟡 Showing ${selectedCategory} meme!`);
             };
         }
 
