@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinOps Meme Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .live-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .meme-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        #memeImage {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #FF6B35, #ff8c5f);
+        }
+
+        .meme-text-top, .meme-text-bottom {
+            font-size: 2em;
+            font-weight: 900;
+            text-align: center;
+            color: white;
+            text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .vote-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .vote-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .vote-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .vote-btn {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.5em;
+        }
+
+        .vote-btn:hover {
+            transform: scale(1.1);
+            border-color: #667eea;
+        }
+
+        .vote-btn.voted {
+            background: #667eea;
+            border-color: #667eea;
+            animation: voteAnimation 0.5s;
+        }
+
+        @keyframes voteAnimation {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .vote-count {
+            font-size: 0.7em;
+            display: block;
+            color: #666;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .meme-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .meme-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-personal { background: #10b981; }
+        .btn-team { background: #f59e0b; }
+        .btn-random { background: #ef4444; }
+        .btn-trending { background: #3b82f6; }
+        .btn-ai { background: #8b5cf6; }
+        .btn-funny { background: #ec4899; }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stats-card, .activity-card, .popular-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .stats-card h3, .activity-card h3, .popular-card h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: #2d3748;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .activity-item, .popular-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.9em;
+        }
+
+        .activity-item:last-child, .popular-item:last-child {
+            border-bottom: none;
+        }
+
+        .share-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .share-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .url-box {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-copy { background: #f59e0b; }
+        .btn-slack { background: #4a154b; }
+        .btn-teams { background: #5558af; }
+        .btn-twitter { background: #1da1f2; }
+        .btn-qr { background: #8b5cf6; }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="notification" class="notification"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="live-badge">🔴 LIVE NOW</div>
+            <h1>💰 FinOps Meme Generator</h1>
+            <p class="subtitle">The most fun way to learn FinOps! Created for cloud cost optimization teams!</p>
+        </div>
+
+        <div class="main-content">
+            <div class="meme-section">
+                <div id="memeImage">
+                    <div class="meme-text-top">WHEN YOUR TEAM</div>
+                    <div style="font-size: 6em;">🚀</div>
+                    <div class="meme-text-bottom">DISCOVERS THIS MEME BOT</div>
+                </div>
+
+                <div class="swipe-controls" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                    <button onclick="previousMeme()" style="background: #6b7280; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; font-size: 1.5em;">←</button>
+                    <span id="memeCounter" style="align-self: center; color: #666; font-weight: 600;">1 / 12</span>
+                    <button onclick="nextMeme()" style="background: #6b7280; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; font-size: 1.5em;">→</button>
+                </div>
+
+                <div class="vote-section">
+                    <h3>📊 Rate this meme:</h3>
+                    <div class="vote-buttons">
+                        <button class="vote-btn" id="vote-fire" onclick="voteMeme('fire')">
+                            🔥<span class="vote-count" id="fire-count">0</span>
+                        </button>
+                        <button class="vote-btn" id="vote-laugh" onclick="voteMeme('laugh')">
+                            😂<span class="vote-count" id="laugh-count">0</span>
+                        </button>
+                        <button class="vote-btn" id="vote-mind-blown" onclick="voteMeme('mind-blown')">
+                            🤯<span class="vote-count" id="mind-blown-count">0</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="button-grid">
+                    <button class="meme-btn btn-personal" onclick="showCustomMemeForm()">
+                        ✏️ Create Custom
+                    </button>
+                    <button class="meme-btn btn-team" onclick="generateMeme('team')">
+                        👥 Team Meme
+                    </button>
+                    <button class="meme-btn btn-random" onclick="generateMeme('random')">
+                        🎲 Random Meme
+                    </button>
+                    <button class="meme-btn btn-trending" onclick="generateMeme('trending')">
+                        📈 Trending
+                    </button>
+                    <button class="meme-btn btn-ai" onclick="generateMeme('ai')">
+                        🤖 AI Generated
+                    </button>
+                    <button class="meme-btn btn-funny" onclick="generateMeme('funny')">
+                        😄 Extra Funny
+                    </button>
+                </div>
+
+                <div id="customMemeForm" style="display: none; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h4>Create Your Custom Meme</h4>
+                    <input type="text" id="topText" placeholder="Top text" style="width: 100%; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <select id="emojiSelect" style="width: 100%; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        <option value="😅">😅 Laughing</option>
+                        <option value="🤯">🤯 Mind Blown</option>
+                        <option value="💸">💸 Money Flying</option>
+                        <option value="📈">📈 Chart Up</option>
+                        <option value="🔥">🔥 Fire</option>
+                        <option value="⚡">⚡ Lightning</option>
+                        <option value="🚀">🚀 Rocket</option>
+                        <option value="💰">💰 Money Bag</option>
+                    </select>
+                    <input type="text" id="bottomText" placeholder="Bottom text" style="width: 100%; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button onclick="createCustomMeme()" style="flex: 1; padding: 10px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer;">Create Meme</button>
+                        <button onclick="hideCustomMemeForm()" style="flex: 1; padding: 10px; background: #6b7280; color: white; border: none; border-radius: 5px; cursor: pointer;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="stats-card">
+                    <h3>📊 Live Stats</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="memes-generated">12</div>
+                            <div class="stat-label">Memes Generated</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="active-users">3</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="laughs-today">8</div>
+                            <div class="stat-label">Laughs Today</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="cost-saved">$1.2K</div>
+                            <div class="stat-label">Cost Saved</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-card">
+                    <h3>🔥 Recent Activity</h3>
+                    <div class="activity-item">Welcome to FinOps Memes!</div>
+                    <div class="activity-item">Create your first meme</div>
+                    <div class="activity-item">Share with your team</div>
+                    <div class="activity-item">Start saving costs with fun!</div>
+                </div>
+
+                <div class="popular-card">
+                    <h3>⭐ Popular This Week</h3>
+                    <div class="popular-item">🏆 "Getting started with FinOps" - 5 votes</div>
+                    <div class="popular-item">🥈 "First cost optimization" - 3 votes</div>
+                    <div class="popular-item">🥉 "Learning cloud costs" - 2 votes</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="share-section">
+            <h2>🚀 Share Your Meme</h2>
+            <div class="url-box">
+                <span id="meme-url">https://finops-memes.netlify.app/meme/12345</span>
+                <button class="share-btn btn-copy" onclick="copyUrl()">📋 Copy</button>
+            </div>
+            <div class="share-buttons">
+                <button class="share-btn btn-slack" onclick="shareToSlack()">📱 Slack</button>
+                <button class="share-btn btn-teams" onclick="shareToTeams()">💼 Teams</button>
+                <button class="share-btn btn-twitter" onclick="shareToTwitter()">🐦 Twitter</button>
+                <button class="share-btn btn-qr" onclick="generateQR()">📱 QR Code</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Meme templates for different categories
+        const memeTemplates = {
+            personal: [
+                { top: "WHEN YOU PERSONALLY", emoji: "😅", bottom: "SAVE $10K ON AWS COSTS" },
+                { top: "ME EXPLAINING", emoji: "🤓", bottom: "RESERVED INSTANCES AGAIN" },
+                { top: "WHEN I FIND", emoji: "🕵️", bottom: "UNUSED RESOURCES" }
+            ],
+            team: [
+                { top: "WHEN YOUR TEAM", emoji: "🚀", bottom: "DISCOVERS THIS MEME BOT" },
+                { top: "TEAM MEETING:", emoji: "💼", bottom: "LET'S OPTIMIZE EVERYTHING" },
+                { top: "WHEN THE WHOLE TEAM", emoji: "🎉", bottom: "HITS COST TARGETS" }
+            ],
+            random: [
+                { top: "CLOUD COSTS", emoji: "📈", bottom: "GO BRRRRR" },
+                { top: "SPOT INSTANCES", emoji: "🎰", bottom: "FEELING LUCKY?" },
+                { top: "WHEN AWS BILL", emoji: "💸", bottom: "ARRIVES EARLY" }
+            ],
+            trending: [
+                { top: "FINOPS IN 2024", emoji: "🔥", bottom: "STILL SAVING MONEY" },
+                { top: "KUBERNETES COSTS", emoji: "⚡", bottom: "OPTIMIZED TO PERFECTION" },
+                { top: "SERVERLESS", emoji: "🌟", bottom: "PAY PER LAUGH" }
+            ],
+            ai: [
+                { top: "AI OPTIMIZING", emoji: "🤖", bottom: "YOUR CLOUD SPEND" },
+                { top: "MACHINE LEARNING", emoji: "🧠", bottom: "COST PREDICTIONS" },
+                { top: "CHATGPT EXPLAINS", emoji: "💬", bottom: "FINOPS TO YOUR CEO" }
+            ],
+            funny: [
+                { top: "WHEN YOU REALIZE", emoji: "😱", bottom: "YOU LEFT EC2 RUNNING" },
+                { top: "BUDGET ALERTS", emoji: "🚨", bottom: "AT 3 AM AGAIN" },
+                { top: "EXPLAINING CLOUD COSTS", emoji: "🤯", bottom: "TO FINANCE TEAM" }
+            ]
+        };
+
+        let currentVotes = { fire: 0, laugh: 0, 'mind-blown': 0 };
+        let customMemes = [];
+        let currentMemeId = null;
+        let currentMemeIndex = 0;
+        let allMemes = [];
+        let userVoted = false;
+
+        function generateMeme(category) {
+            const templates = memeTemplates[category];
+            const template = templates[Math.floor(Math.random() * templates.length)];
+            
+            // Find this template in allMemes and navigate to it
+            initializeMemes();
+            const templateIndex = allMemes.findIndex(m => m.top === template.top && m.emoji === template.emoji);
+            if (templateIndex !== -1) {
+                currentMemeIndex = templateIndex;
+                displayCurrentMeme();
+            }
+            
+            updateStats();
+            showNotification(`Generated ${category} meme! Use arrows to browse! 🎉`);
+        }
+
+        function voteMeme(type) {
+            if (userVoted) return;
+            
+            // Update current meme votes
+            if (allMemes[currentMemeIndex]) {
+                if (!allMemes[currentMemeIndex].votes) {
+                    allMemes[currentMemeIndex].votes = { fire: 0, laugh: 0, 'mind-blown': 0 };
+                }
+                allMemes[currentMemeIndex].votes[type]++;
+                document.getElementById(`${type}-count`).textContent = allMemes[currentMemeIndex].votes[type];
+            }
+            
+            document.getElementById(`vote-${type}`).classList.add('voted');
+            userVoted = true;
+            showNotification(`Thanks for voting! 👍`);
+        }
+
+        function updateStats() {
+            const memesGenerated = document.getElementById('memes-generated');
+            const currentCount = parseInt(memesGenerated.textContent.replace(',', ''));
+            memesGenerated.textContent = (currentCount + 1).toLocaleString();
+        }
+
+        function showCustomMemeForm() {
+            document.getElementById('customMemeForm').style.display = 'block';
+        }
+
+        function hideCustomMemeForm() {
+            document.getElementById('customMemeForm').style.display = 'none';
+            document.getElementById('topText').value = '';
+            document.getElementById('bottomText').value = '';
+        }
+
+        function createCustomMeme() {
+            const topText = document.getElementById('topText').value.trim();
+            const bottomText = document.getElementById('bottomText').value.trim();
+            const emoji = document.getElementById('emojiSelect').value;
+            
+            if (!topText || !bottomText) {
+                showNotification('Please fill in both text fields! ✏️');
+                return;
+            }
+            
+            const meme = {
+                id: Date.now(),
+                top: topText.toUpperCase(),
+                emoji: emoji,
+                bottom: bottomText.toUpperCase(),
+                votes: { fire: 0, laugh: 0, 'mind-blown': 0 },
+                creator: 'You'
+            };
+            
+            customMemes.push(meme);
+            initializeMemes();
+            currentMemeIndex = allMemes.length - 1; // Go to the newly created meme
+            displayCurrentMeme();
+            
+            updateStats();
+            hideCustomMemeForm();
+            showNotification('Custom meme created! Use arrows to browse! 🎉');
+        }
+
+        function copyUrl() {
+            const url = document.getElementById('meme-url').textContent;
+            navigator.clipboard.writeText(url);
+            showNotification('URL copied to clipboard! 📋');
+        }
+
+        function shareToSlack() {
+            showNotification('Opening Slack... 📱');
+        }
+
+        function shareToTeams() {
+            showNotification('Opening Teams... 💼');
+        }
+
+        function shareToTwitter() {
+            showNotification('Opening Twitter... 🐦');
+        }
+
+        function generateQR() {
+            showNotification('QR Code generated! 📱');
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Auto-update stats every 5 seconds
+        setInterval(() => {
+            const activeUsers = document.getElementById('active-users');
+            const laughsToday = document.getElementById('laughs-today');
+            
+            // Simulate live updates
+            const currentUsers = parseInt(activeUsers.textContent);
+            const currentLaughs = parseInt(laughsToday.textContent);
+            
+            activeUsers.textContent = currentUsers + Math.floor(Math.random() * 3);
+            laughsToday.textContent = currentLaughs + Math.floor(Math.random() * 5);
+        }, 5000);
+
+        // Initialize all memes pool
+        function initializeMemes() {
+            allMemes = [
+                ...Object.values(memeTemplates).flat(),
+                ...customMemes
+            ];
+        }
+
+        function nextMeme() {
+            initializeMemes();
+            currentMemeIndex = (currentMemeIndex + 1) % allMemes.length;
+            displayCurrentMeme();
+        }
+
+        function previousMeme() {
+            initializeMemes();
+            currentMemeIndex = currentMemeIndex === 0 ? allMemes.length - 1 : currentMemeIndex - 1;
+            displayCurrentMeme();
+        }
+
+        function displayCurrentMeme() {
+            if (allMemes.length === 0) return;
+            
+            const meme = allMemes[currentMemeIndex];
+            const memeImage = document.getElementById('memeImage');
+            memeImage.innerHTML = `
+                <div class="meme-text-top">${meme.top}</div>
+                <div style="font-size: 6em;">${meme.emoji}</div>
+                <div class="meme-text-bottom">${meme.bottom}</div>
+            `;
+            
+            // Update counter
+            document.getElementById('memeCounter').textContent = `${currentMemeIndex + 1} / ${allMemes.length}`;
+            
+            // Reset votes for current meme
+            const memeVotes = meme.votes || { fire: 0, laugh: 0, 'mind-blown': 0 };
+            document.getElementById('fire-count').textContent = memeVotes.fire;
+            document.getElementById('laugh-count').textContent = memeVotes.laugh;
+            document.getElementById('mind-blown-count').textContent = memeVotes['mind-blown'];
+            
+            userVoted = false;
+            document.querySelectorAll('.vote-btn').forEach(btn => btn.classList.remove('voted'));
+        }
+
+        // Generate a random meme on page load
+        window.addEventListener('load', () => {
+            initializeMemes();
+            setTimeout(() => displayCurrentMeme(), 1000);
+        });
+    </script>
+</body>
+</html>
