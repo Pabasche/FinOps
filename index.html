@@ -312,15 +312,19 @@
         <div class="header">
             <div class="live-badge">🔴 LIVE NOW</div>
             <h1>💰 FinOps Meme Generator</h1>
-            <p class="subtitle">The most fun way to learn FinOps! Created for cloud cost optimization teams!</p>
+            <p class="subtitle">The most fun way to learn FinOps!</p>
+            <button onclick="showAdminLogin()" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9em;">🔒 Admin</button>
         </div>
 
         <div class="main-content">
             <div class="meme-section">
-                <div id="memeImage" style="background: #f8f9fa; color: #666; font-size: 1.2em; text-align: center;">
-                    <div>📤</div>
-                    <div>Upload your first meme to get started!</div>
-                    <div>Click "Upload Your Meme" below</div>
+                <div style="position: relative;">
+                    <div id="memeImage" style="background: #f8f9fa; color: #666; font-size: 1.2em; text-align: center;">
+                        <div>📤</div>
+                        <div>Upload your first meme to get started!</div>
+                        <div>Click "Upload Your Meme" below</div>
+                    </div>
+                    <button id="deleteBtn" onclick="deleteMeme()" style="display: none; position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em;">🗑️ Delete</button>
                 </div>
 
                 <div class="swipe-controls" style="display: none; justify-content: center; gap: 20px; margin-bottom: 20px;" id="swipeControls">
@@ -432,6 +436,18 @@
                 <button class="share-btn btn-qr" onclick="generateQR()">📱 QR Code</button>
             </div>
         </div>
+        
+        <!-- Admin Login Modal -->
+        <div id="adminModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 15px; text-align: center;">
+                <h3 style="margin-bottom: 20px;">Admin Login</h3>
+                <input type="password" id="adminPassword" placeholder="Enter password" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px;">
+                <div>
+                    <button onclick="adminLogin()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">Login</button>
+                    <button onclick="hideAdminLogin()" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 5px; cursor: pointer;">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -446,6 +462,7 @@
         let recentActivity = [];
         let totalLaughsToday = 0;
         let activeUsers = new Set();
+        let isAdmin = false;
 
 
 
@@ -613,6 +630,7 @@
                     </div>
                 `;
                 document.getElementById('swipeControls').style.display = 'none';
+                document.getElementById('deleteBtn').style.display = 'none';
                 return;
             }
             
@@ -623,6 +641,9 @@
             memeImage.innerHTML = `
                 <img src="${meme.imageUrl}" alt="${meme.title}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;">
             `;
+            
+            // Show/hide delete button based on admin status
+            document.getElementById('deleteBtn').style.display = isAdmin ? 'block' : 'none';
             
             // Update counter
             document.getElementById('memeCounter').textContent = `${currentMemeIndex + 1} / ${allMemes.length}`;
@@ -684,6 +705,72 @@
                 popularContent.innerHTML = '<div class="popular-item">No memes yet - upload the first one!</div>';
             }
         }
+        
+        // Admin functions
+        function showAdminLogin() {
+            document.getElementById('adminModal').style.display = 'block';
+            document.getElementById('adminPassword').focus();
+        }
+        
+        function hideAdminLogin() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        }
+        
+        function adminLogin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === 'pabasche') {
+                isAdmin = true;
+                hideAdminLogin();
+                displayCurrentMeme();
+                showNotification('Admin mode activated! 🔒');
+            } else {
+                showNotification('Invalid password! ❌');
+            }
+        }
+        
+        function deleteMeme() {
+            if (!isAdmin || allMemes.length === 0) return;
+            
+            if (confirm('Are you sure you want to delete this meme?')) {
+                const deletedMeme = allMemes[currentMemeIndex];
+                
+                // Calculate votes to subtract from total laughs
+                const deletedVotes = (deletedMeme.votes?.fire || 0) + (deletedMeme.votes?.laugh || 0) + (deletedMeme.votes?.love || 0) + (deletedMeme.votes?.['mind-blown'] || 0) + (deletedMeme.votes?.['thumbs-up'] || 0);
+                totalLaughsToday -= deletedVotes;
+                
+                // Remove from customMemes array
+                const memeIndex = customMemes.findIndex(m => m.id === deletedMeme.id);
+                if (memeIndex !== -1) {
+                    customMemes.splice(memeIndex, 1);
+                }
+                
+                // Remove from activity
+                recentActivity = recentActivity.filter(activity => !activity.includes(deletedMeme.title));
+                
+                // Update arrays and display
+                initializeMemes();
+                if (allMemes.length === 0) {
+                    currentMemeIndex = 0;
+                } else if (currentMemeIndex >= allMemes.length) {
+                    currentMemeIndex = allMemes.length - 1;
+                }
+                
+                displayCurrentMeme();
+                updateStats();
+                updateActivityDisplay();
+                updatePopularMemes();
+                
+                showNotification('Meme deleted! 🗑️');
+            }
+        }
+        
+        // Allow Enter key for admin login
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.getElementById('adminModal').style.display === 'block') {
+                adminLogin();
+            }
+        });
         
         // Initialize empty state on page load
         window.addEventListener('load', () => {
