@@ -535,7 +535,16 @@
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('currentUrl').textContent = window.location.href;
+            const urlParams = new URLSearchParams(window.location.search);
+            const memeId = urlParams.get('meme');
+            
+            if (memeId && memes.length > 0) {
+                currentMemeIndex = parseInt(memeId) % memes.length;
+            } else if (memes.length > 0) {
+                currentMemeIndex = Math.floor(Math.random() * memes.length);
+            }
+            
+            updateCurrentUrl();
             displayCurrentMeme();
             updateStats();
             updateActivityFeed();
@@ -569,7 +578,7 @@
             if (meme.type === 'gif') {
                 memeImage.innerHTML = `
                     <div style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; padding: 0;">
-                        <div style="background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 15px; font-size: 1.1em; font-weight: bold; text-align: center; margin-bottom: 10px; width: 100%; word-wrap: break-word; box-sizing: border-box;">
+                        <div style="background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 15px; font-size: 1.1em; font-weight: bold; text-align: center; margin: 50px 10px 10px 10px; word-wrap: break-word; box-sizing: border-box;">
                             ${meme.text}
                         </div>
                         <img src="${meme.url}" style="width: 100%; flex: 1; object-fit: contain; border-radius: 10px;" alt="GIF">
@@ -664,12 +673,20 @@
             if (memes.length === 0) return;
             currentMemeIndex = (currentMemeIndex + 1) % memes.length;
             displayCurrentMeme();
+            updateCurrentUrl();
         }
 
         function previousMeme() {
             if (memes.length === 0) return;
             currentMemeIndex = currentMemeIndex === 0 ? memes.length - 1 : currentMemeIndex - 1;
             displayCurrentMeme();
+            updateCurrentUrl();
+        }
+        
+        function updateCurrentUrl() {
+            const baseUrl = window.location.origin + window.location.pathname;
+            const currentUrl = memes.length > 0 ? `${baseUrl}?meme=${currentMemeIndex}` : baseUrl;
+            document.getElementById('currentUrl').textContent = currentUrl;
         }
 
         function showUploadForm() {
@@ -851,6 +868,7 @@
                 
                 currentMemeIndex = memes.length - 1;
                 displayCurrentMeme();
+                updateCurrentUrl();
                 updateStats();
                 updatePopularCategories();
                 addActivity(`${uploaderName} uploaded a new ${category}`);
@@ -891,6 +909,7 @@
             
             currentMemeIndex = memes.length - 1;
             displayCurrentMeme();
+            updateCurrentUrl();
             updateStats();
             updatePopularCategories();
             addActivity(`${uploaderName} added a new GIF ${category}`);
@@ -928,6 +947,7 @@
                 }
                 
                 displayCurrentMeme();
+                updateCurrentUrl();
                 updateStats();
                 updatePopularCategories();
                 addActivity(`Admin deleted a ${deletedMeme.category}`);
@@ -1021,31 +1041,36 @@
         }
 
         function copyUrl() {
-            navigator.clipboard.writeText(window.location.href);
+            const currentUrl = document.getElementById('currentUrl').textContent;
+            navigator.clipboard.writeText(currentUrl);
             showNotification('📋 URL copied to clipboard!');
         }
 
         function shareToSlack() {
-            const text = `Check out our Amazon Stores Meme Generator! 🎭💰 ${window.location.href}`;
+            const currentUrl = document.getElementById('currentUrl').textContent;
+            const text = `Check out our Amazon Stores Meme Generator! 🎭💰 ${currentUrl}`;
             window.open(`https://slack.com/intl/en-gb/`, '_blank');
             navigator.clipboard.writeText(text);
             showNotification('💬 Message copied! Paste it in Slack.');
         }
 
         function shareToTeams() {
-            const text = `Check out our Amazon Stores Meme Generator! 🎭💰 ${window.location.href}`;
+            const currentUrl = document.getElementById('currentUrl').textContent;
+            const text = `Check out our Amazon Stores Meme Generator! 🎭💰 ${currentUrl}`;
             navigator.clipboard.writeText(text);
             showNotification('👥 Message copied! Paste it in Teams.');
         }
 
         function shareToTwitter() {
+            const currentUrl = document.getElementById('currentUrl').textContent;
             const text = `Having fun with Amazon Stores memes! 🎭💰 Check it out:`;
-            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(currentUrl)}`;
             window.open(url, '_blank');
         }
 
         function generateQR() {
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(window.location.href)}`;
+            const currentUrl = document.getElementById('currentUrl').textContent;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(currentUrl)}`;
             window.open(qrUrl, '_blank');
         }
 
