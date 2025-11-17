@@ -357,7 +357,7 @@
                 <div class="button-grid">
                     <button class="meme-btn btn-personal" onclick="showUploadForm()">📤 Upload Your Meme</button>
                     <button class="meme-btn btn-team" onclick="showGifForm()">🎬 Add GIF with Text</button>
-                    <button class="meme-btn btn-random" onclick="randomMeme()">🎲 Random Meme</button>
+                    <button class="meme-btn btn-random" onclick="showCategorySelector()">📂 Select Category</button>
                     <button class="meme-btn btn-trending" onclick="showStats()">📊 View Stats</button>
                 </div>
             </div>
@@ -556,11 +556,11 @@
 
             if (meme.type === 'gif') {
                 memeImage.innerHTML = `
-                    <div style="position: relative; width: 100%; height: 100%;">
-                        <img src="${meme.url}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;" alt="GIF">
-                        <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 1.2em; font-weight: bold; text-align: center; max-width: 90%;">
+                    <div style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; padding: 0;">
+                        <div style="background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 15px; font-size: 1.1em; font-weight: bold; text-align: center; margin-bottom: 10px; width: 100%; word-wrap: break-word; box-sizing: border-box;">
                             ${meme.text}
                         </div>
+                        <img src="${meme.url}" style="width: 100%; flex: 1; object-fit: contain; border-radius: 10px;" alt="GIF">
                     </div>
                 `;
                 memeImage.style.background = 'transparent';
@@ -651,14 +651,57 @@
             displayCurrentMeme();
         }
 
-        function randomMeme() {
+        function showCategorySelector() {
             if (memes.length === 0) {
                 showNotification('No memes available yet!');
                 return;
             }
-            currentMemeIndex = Math.floor(Math.random() * memes.length);
-            displayCurrentMeme();
-            showNotification('🎲 Random meme loaded!');
+            
+            const categories = [...new Set(memes.map(m => m.category))];
+            if (categories.length === 0) {
+                showNotification('No categories available!');
+                return;
+            }
+            
+            let options = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;';
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%;">
+                    <h3 style="margin-bottom: 20px;">📂 Select Category</h3>
+                    <select id="categorySelect" style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 1em; margin-bottom: 20px;">
+                        <option value="">Choose category...</option>
+                        ${options}
+                    </select>
+                    <div>
+                        <button onclick="filterByCategory()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 10px; font-weight: 600;">Show Category</button>
+                        <button onclick="document.body.removeChild(this.closest('div').parentElement.parentElement)" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancel</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            window.filterByCategory = function() {
+                const selectedCategory = document.getElementById('categorySelect').value;
+                if (!selectedCategory) {
+                    showNotification('Please select a category!');
+                    return;
+                }
+                
+                const categoryMemes = memes.filter(m => m.category === selectedCategory);
+                if (categoryMemes.length === 0) {
+                    showNotification('No memes in this category!');
+                    return;
+                }
+                
+                const randomIndex = Math.floor(Math.random() * categoryMemes.length);
+                const selectedMeme = categoryMemes[randomIndex];
+                currentMemeIndex = memes.indexOf(selectedMeme);
+                displayCurrentMeme();
+                document.body.removeChild(modal);
+                showNotification(`📂 Showing ${selectedCategory} meme!`);
+            };
         }
 
         function showUploadForm() {
