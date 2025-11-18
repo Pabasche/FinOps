@@ -313,8 +313,7 @@
         <div class="header">
             <div class="live-badge">🔴 SHARED MODE</div>
             <h1>Amazon Stores Meme Generator</h1>
-            <p class="subtitle">The most fun way to share team memes!</p>
-            <button onclick="showAdminLogin()" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9em;">🔒 Admin</button>
+            <p class="subtitle">Now everyone can see and share memes!</p>
         </div>
 
         <div class="main-content">
@@ -322,15 +321,11 @@
                 <div style="position: relative;">
                     <div id="memeImage" onclick="nextMeme()" style="background: #f8f9fa; color: #666; font-size: 1.2em; text-align: center;">
                         <div>📤</div>
-                        <div>Upload your first meme to get started!</div>
-                        <div>Click "Upload Your Meme" below</div>
+                        <div>Loading shared memes...</div>
+                        <div>Please wait</div>
                     </div>
                     <button onclick="previousMeme()" style="position: absolute; top: 10px; left: 10px; background: rgba(102, 126, 234, 0.9); color: white; border: none; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 10;">←</button>
-                    <button onclick="showCategorySelector()" style="position: absolute; top: 10px; left: 40%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">🟡 Team</button>
-                    <button onclick="showTypeSelector()" style="position: absolute; top: 10px; left: 60%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">⭐ Type</button>
                     <button onclick="nextMeme()" style="position: absolute; top: 10px; right: 10px; background: rgba(102, 126, 234, 0.9); color: white; border: none; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 10;">→</button>
-
-                    <button id="deleteBtn" onclick="deleteMeme()" style="display: none; position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em; z-index: 10;">🗑️ Delete</button>
                 </div>
                 <div id="memeCreator" style="text-align: center; font-size: 0.8em; color: #999; margin-top: 5px; margin-bottom: 10px;"></div>
 
@@ -353,7 +348,7 @@
                             👍 <span class="vote-count" id="thumbs-up-count">0</span>
                         </button>
                         <button class="vote-btn" onclick="vote('facepalm')">
-                            🤦‍♂️ <span class="vote-count" id="facepalm-count">0</span>
+                            🤦♂️ <span class="vote-count" id="facepalm-count">0</span>
                         </button>
                     </div>
                 </div>
@@ -390,21 +385,14 @@
                 <div class="activity-card">
                     <h3>🔥 Recent Activity</h3>
                     <div id="activityFeed">
-                        <div class="activity-item">Welcome! Upload your first meme to get started.</div>
+                        <div class="activity-item">Loading shared activities...</div>
                     </div>
                 </div>
 
                 <div class="popular-card">
                     <h3>🏆 Top Teams</h3>
                     <div id="popularCategories">
-                        <div class="popular-item">FinOPS - 0 uploads</div>
-                        <div class="popular-item">Operations - 0 uploads</div>
-                        <div class="popular-item">DSP team - 0 uploads</div>
-                        <div class="popular-item">PXT - 0 uploads</div>
-                        <div class="popular-item">ACES - 0 uploads</div>
-                        <div class="popular-item">Retail - 0 uploads</div>
-                        <div class="popular-item">Advertising - 0 uploads</div>
-                        <div class="popular-item">Amazon Business - 0 uploads</div>
+                        <div class="popular-item">Loading team stats...</div>
                     </div>
                 </div>
             </div>
@@ -423,10 +411,6 @@
                 <button class="share-btn btn-qr" onclick="generateQR()">📱 QR Code</button>
             </div>
         </div>
-
-        <div style="text-align: center; color: white; opacity: 0.8; margin-top: 20px; font-size: 0.9em;">
-            Any issue or request please ping @pabasche on slack
-        </div>
     </div>
 
     <!-- Upload Form Modal -->
@@ -436,9 +420,6 @@
             <form id="uploadForm">
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; font-weight: 600;">Choose Image:</label>
-                    <div style="margin-bottom: 10px;">
-                        <a href="https://imgflip.com/memegenerator" target="_blank" style="color: #667eea; text-decoration: none; font-size: 0.9em;">🎨 Create meme on imgflip.com →</a>
-                    </div>
                     <input type="file" id="imageFile" accept="image/*" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
                 </div>
                 <div style="margin-bottom: 15px;">
@@ -474,11 +455,7 @@
             <form id="gifForm">
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; font-weight: 600;">GIF URL:</label>
-                    <div style="margin-bottom: 10px;">
-                        <a href="https://giphy.com" target="_blank" style="color: #667eea; text-decoration: none; font-size: 0.9em;">🎬 Find GIF on giphy.com →</a>
-                    </div>
                     <input type="url" id="gifUrl" placeholder="https://media2.giphy.com/media/..." required style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
-                    <small style="color: #666; font-size: 0.8em;">Copy GIF link from giphy.com</small>
                 </div>
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; font-weight: 600;">Text Overlay:</label>
@@ -510,39 +487,23 @@
         </div>
     </div>
 
-    <!-- Admin Login Modal -->
-    <div id="adminModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
-        <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%;">
-            <h2 style="margin-bottom: 20px; text-align: center;">🔒 Admin Access</h2>
-            <form id="adminForm">
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Password:</label>
-                    <input type="password" id="adminPassword" required style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button type="submit" style="flex: 1; padding: 12px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Login</button>
-                    <button type="button" onclick="closeAdminLogin()" style="flex: 1; padding: 12px; background: #6b7280; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script>
-        // Shared storage configuration
+        // Simple shared storage using JSONBin.io (free service)
         const API_KEY = '$2a$10$LCiT4iNH2URUwmLIgQoIFejusShCL1DVcK4tyWhPx85cW30Fyb9SG';
-        const BIN_ID = '676b8b8ead19ca34f8d4b8c7';
+        const BIN_ID = '676b8b8ead19ca34f8d4b8c7'; // Will be created automatically
         const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-        
+
         let memes = [];
         let currentMemeIndex = 0;
-        let isAdmin = false;
         let userVotes = JSON.parse(localStorage.getItem('userVotes')) || {};
 
         // Load memes from shared storage
         async function loadSharedMemes() {
             try {
                 const response = await fetch(API_URL + '/latest', {
-                    headers: { 'X-Master-Key': API_KEY }
+                    headers: {
+                        'X-Master-Key': API_KEY
+                    }
                 });
                 const data = await response.json();
                 memes = data.record.memes || [];
@@ -551,7 +512,9 @@
                 updateActivityFeed();
                 updatePopularCategories();
             } catch (error) {
-                console.error('Loading from cloud failed, using local storage:', error);
+                console.error('Error loading memes:', error);
+                showNotification('⚠️ Using offline mode');
+                // Fallback to localStorage
                 memes = JSON.parse(localStorage.getItem('finopsMemes')) || [];
                 displayCurrentMeme();
             }
@@ -571,10 +534,13 @@
                         lastUpdated: new Date().toISOString()
                     })
                 });
+                // Also save locally as backup
                 localStorage.setItem('finopsMemes', JSON.stringify(memes));
             } catch (error) {
-                console.error('Saving to cloud failed, using local storage:', error);
+                console.error('Error saving memes:', error);
+                // Fallback to localStorage
                 localStorage.setItem('finopsMemes', JSON.stringify(memes));
+                showNotification('⚠️ Saved locally only');
             }
         }
 
@@ -582,32 +548,28 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadSharedMemes();
             updateCurrentUrl();
-            setInterval(loadSharedMemes, 30000); // Auto-refresh every 30 seconds
+            
+            // Auto-refresh every 30 seconds to get new memes
+            setInterval(loadSharedMemes, 30000);
         });
 
         function displayCurrentMeme() {
             const memeImage = document.getElementById('memeImage');
-            const deleteBtn = document.getElementById('deleteBtn');
-            const counter = document.getElementById('memeCounter');
             
             if (memes.length === 0) {
                 memeImage.innerHTML = `
                     <div>📤</div>
-                    <div>Upload your first meme to get started!</div>
-                    <div>Click "Upload Your Meme" below</div>
+                    <div>No shared memes yet!</div>
+                    <div>Be the first to upload</div>
                 `;
                 memeImage.style.background = '#f8f9fa';
                 memeImage.style.color = '#666';
-
-                deleteBtn.style.display = 'none';
                 document.getElementById('memeCreator').textContent = '';
                 resetVoteButtons();
                 return;
             }
 
             const meme = memes[currentMemeIndex];
-
-            deleteBtn.style.display = isAdmin ? 'block' : 'none';
 
             if (meme.type === 'gif') {
                 memeImage.innerHTML = `
@@ -626,7 +588,6 @@
 
             updateVoteDisplay(meme);
             
-            // Show creator if provided and not Anonymous
             const creatorElement = document.getElementById('memeCreator');
             if (meme.uploader && meme.uploader !== 'Anonymous') {
                 creatorElement.textContent = `by ${meme.uploader}`;
@@ -687,7 +648,6 @@
             
             updateVoteDisplay(memes[currentMemeIndex]);
             updateStats();
-            addActivity(`Someone voted ${getEmojiForType(type)} on a ${memes[currentMemeIndex].category}`);
             showNotification(`Voted ${getEmojiForType(type)}! Thanks for the feedback!`);
         }
 
@@ -698,7 +658,7 @@
                 'heart': '❤️',
                 'mind-blown': '🤯',
                 'thumbs-up': '👍',
-                'facepalm': '🤦‍♂️'
+                'facepalm': '🤦♂️'
             };
             return emojis[type] || '👍';
         }
@@ -741,133 +701,6 @@
             document.getElementById('gifForm').reset();
         }
 
-        function showAdminLogin() {
-            document.getElementById('adminModal').style.display = 'flex';
-        }
-
-        function closeAdminLogin() {
-            document.getElementById('adminModal').style.display = 'none';
-            document.getElementById('adminForm').reset();
-        }
-
-        function showTypeSelector() {
-            if (memes.length === 0) {
-                showNotification('No memes available yet!');
-                return;
-            }
-            
-            const voteTypes = [
-                { key: 'ALL', emoji: '⭐', name: 'ALL' },
-                { key: 'fire', emoji: '🔥', name: 'Fire' },
-                { key: 'laugh', emoji: '😂', name: 'Laugh' },
-                { key: 'heart', emoji: '❤️', name: 'Heart' },
-                { key: 'mind-blown', emoji: '🤯', name: 'Mind Blown' },
-                { key: 'thumbs-up', emoji: '👍', name: 'Thumbs Up' },
-                { key: 'facepalm', emoji: '🤦‍♂️', name: 'Facepalm' }
-            ];
-            
-            let options = voteTypes.map(type => 
-                `<option value="${type.key}" ${type.key === 'ALL' ? 'selected' : ''}>${type.emoji} ${type.name}</option>`
-            ).join('');
-            
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;';
-            modal.innerHTML = `
-                <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%;">
-                    <h3 style="margin-bottom: 20px;">⭐ Select Type</h3>
-                    <select id="typeSelect" style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 1em; margin-bottom: 20px;">
-                        ${options}
-                    </select>
-                    <div>
-                        <button onclick="filterByType()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 10px; font-weight: 600;">Show Type</button>
-                        <button onclick="document.body.removeChild(this.closest('div').parentElement.parentElement)" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancel</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            
-            window.filterByType = function() {
-                const selectedType = document.getElementById('typeSelect').value;
-                
-                if (selectedType === 'ALL') {
-                    const randomIndex = Math.floor(Math.random() * memes.length);
-                    currentMemeIndex = randomIndex;
-                    displayCurrentMeme();
-                    document.body.removeChild(modal);
-                    showNotification('⭐ Showing all types!');
-                    return;
-                }
-                
-                const typeMemes = memes.filter(m => m.votes && m.votes[selectedType] && m.votes[selectedType] > 0);
-                if (typeMemes.length === 0) {
-                    showNotification(`No memes with ${selectedType} votes!`);
-                    return;
-                }
-                
-                const randomIndex = Math.floor(Math.random() * typeMemes.length);
-                const selectedMeme = typeMemes[randomIndex];
-                currentMemeIndex = memes.indexOf(selectedMeme);
-                displayCurrentMeme();
-                document.body.removeChild(modal);
-                const emoji = voteTypes.find(t => t.key === selectedType).emoji;
-                showNotification(`⭐ Showing ${emoji} rated memes!`);
-            };
-        }
-
-        function showCategorySelector() {
-            const allCategories = ['FinOPS', 'Operations', 'DSP team', 'PXT', 'ACES', 'Retail', 'Advertising', 'Amazon Business'];
-            const availableCategories = allCategories.filter(cat => memes.some(m => m.category === cat));
-            
-            if (memes.length === 0) {
-                showNotification('No memes available yet!');
-                return;
-            }
-            
-            let options = '<option value="ALL" selected>ALL</option>' + availableCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
-            
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;';
-            modal.innerHTML = `
-                <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%;">
-                    <h3 style="margin-bottom: 20px;">🟡 Select Team</h3>
-                    <select id="categorySelect" style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 1em; margin-bottom: 20px;">
-                        ${options}
-                    </select>
-                    <div>
-                        <button onclick="filterByCategory()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 10px; font-weight: 600;">Show Team</button>
-                        <button onclick="document.body.removeChild(this.closest('div').parentElement.parentElement)" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancel</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            
-            window.filterByCategory = function() {
-                const selectedCategory = document.getElementById('categorySelect').value;
-                
-                if (selectedCategory === 'ALL') {
-                    const randomIndex = Math.floor(Math.random() * memes.length);
-                    currentMemeIndex = randomIndex;
-                    displayCurrentMeme();
-                    document.body.removeChild(modal);
-                    showNotification('🟡 Showing all memes!');
-                    return;
-                }
-                
-                const categoryMemes = memes.filter(m => m.category === selectedCategory);
-                if (categoryMemes.length === 0) {
-                    showNotification(`No memes in ${selectedCategory} team!`);
-                    return;
-                }
-                
-                const randomIndex = Math.floor(Math.random() * categoryMemes.length);
-                const selectedMeme = categoryMemes[randomIndex];
-                currentMemeIndex = memes.indexOf(selectedMeme);
-                displayCurrentMeme();
-                document.body.removeChild(modal);
-                showNotification(`🟡 Showing ${selectedCategory} meme!`);
-            };
-        }
-
         // Upload form handler
         document.getElementById('uploadForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -887,7 +720,7 @@
             }
             
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 const newMeme = {
                     type: 'image',
                     url: e.target.result,
@@ -905,10 +738,9 @@
                 updateCurrentUrl();
                 updateStats();
                 updatePopularCategories();
-                addActivity(`${uploaderName} uploaded a new ${category}`);
                 
                 closeUploadForm();
-                showNotification('🎉 Meme uploaded successfully!');
+                showNotification('🎉 Meme shared with everyone!');
             };
             
             reader.readAsDataURL(fileInput.files[0]);
@@ -946,48 +778,10 @@
             updateCurrentUrl();
             updateStats();
             updatePopularCategories();
-            addActivity(`${uploaderName} added a new GIF ${category}`);
             
             closeGifForm();
-            showNotification('🎉 GIF added successfully!');
+            showNotification('🎉 GIF shared with everyone!');
         });
-
-        // Admin form handler
-        document.getElementById('adminForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const password = document.getElementById('adminPassword').value;
-            
-            if (password === 'pabasche') {
-                isAdmin = true;
-                closeAdminLogin();
-                displayCurrentMeme();
-                showNotification('🔓 Admin access granted!');
-            } else {
-                showNotification('❌ Invalid password!');
-            }
-        });
-
-        async function deleteMeme() {
-            if (!isAdmin || memes.length === 0) return;
-            
-            if (confirm('Are you sure you want to delete this meme?')) {
-                const deletedMeme = memes[currentMemeIndex];
-                memes.splice(currentMemeIndex, 1);
-                await saveSharedMemes();
-                
-                if (currentMemeIndex >= memes.length) {
-                    currentMemeIndex = Math.max(0, memes.length - 1);
-                }
-                
-                displayCurrentMeme();
-                updateCurrentUrl();
-                updateStats();
-                updatePopularCategories();
-                addActivity(`Admin deleted a ${deletedMeme.category}`);
-                showNotification('🗑️ Meme deleted!');
-            }
-        }
 
         function updateStats() {
             const totalVotes = memes.reduce((sum, meme) => {
@@ -1006,29 +800,22 @@
             document.getElementById('costSaved').textContent = `€${costSaved.toLocaleString()}`;
         }
 
-        function addActivity(message) {
-            const activityFeed = document.getElementById('activityFeed');
-            const timestamp = new Date().toLocaleTimeString();
-            
-            const activityItem = document.createElement('div');
-            activityItem.className = 'activity-item';
-            activityItem.textContent = `${timestamp} - ${message}`;
-            
-            activityFeed.insertBefore(activityItem, activityFeed.firstChild);
-            
-            // Keep only last 5 activities
-            while (activityFeed.children.length > 5) {
-                activityFeed.removeChild(activityFeed.lastChild);
-            }
-        }
-
         function updateActivityFeed() {
-            if (memes.length === 0) return;
+            const activityFeed = document.getElementById('activityFeed');
+            activityFeed.innerHTML = '';
             
-            const recentMemes = memes.slice(-3).reverse();
+            if (memes.length === 0) {
+                activityFeed.innerHTML = '<div class="activity-item">No activity yet. Upload the first meme!</div>';
+                return;
+            }
+            
+            const recentMemes = memes.slice(-5).reverse();
             recentMemes.forEach(meme => {
                 const time = new Date(meme.timestamp).toLocaleTimeString();
-                addActivity(`${meme.uploader} uploaded a ${meme.category}`);
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.textContent = `${time} - ${meme.uploader} shared a ${meme.category} meme`;
+                activityFeed.appendChild(activityItem);
             });
         }
 
@@ -1037,10 +824,6 @@
             memes.forEach(meme => {
                 categoryCounts[meme.category] = (categoryCounts[meme.category] || 0) + 1;
             });
-            
-            const sortedCategories = Object.entries(categoryCounts)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 8);
             
             const popularContainer = document.getElementById('popularCategories');
             popularContainer.innerHTML = '';
@@ -1055,25 +838,6 @@
             });
         }
 
-        function showStats() {
-            const totalVotes = memes.reduce((sum, meme) => {
-                if (meme.votes) {
-                    return sum + Object.values(meme.votes).reduce((voteSum, count) => voteSum + count, 0);
-                }
-                return sum;
-            }, 0);
-            
-            const uniqueUploaders = new Set(memes.map(meme => meme.uploader)).size;
-            const costSaved = totalVotes * 200;
-            
-            alert(`📊 Amazon Stores Meme Stats:\n\n` +
-                  `🎭 Total Memes: ${memes.length}\n` +
-                  `👥 Active Users: ${uniqueUploaders}\n` +
-                  `😂 Total Votes: ${totalVotes}\n` +
-                  `💰 Cost Saved: €${costSaved.toLocaleString()}\n\n` +
-                  `Each vote = €200 in cost savings!`);
-        }
-
         function copyUrl() {
             const currentUrl = document.getElementById('currentUrl').textContent;
             navigator.clipboard.writeText(currentUrl);
@@ -1082,22 +846,21 @@
 
         function shareToSlack() {
             const currentUrl = document.getElementById('currentUrl').textContent;
-            const text = `Check out our Amazon Stores Meme Generator! 🎭💰 ${currentUrl}`;
-            window.open(`https://slack.com/intl/en-gb/`, '_blank');
+            const text = `Check out our shared Amazon Stores Meme Generator! 🎭💰 ${currentUrl}`;
             navigator.clipboard.writeText(text);
             showNotification('💬 Message copied! Paste it in Slack.');
         }
 
         function shareToTeams() {
             const currentUrl = document.getElementById('currentUrl').textContent;
-            const text = `Check out our Amazon Stores Meme Generator! 🎭💰 ${currentUrl}`;
+            const text = `Check out our shared Amazon Stores Meme Generator! 🎭💰 ${currentUrl}`;
             navigator.clipboard.writeText(text);
             showNotification('👥 Message copied! Paste it in Teams.');
         }
 
         function shareToTwitter() {
             const currentUrl = document.getElementById('currentUrl').textContent;
-            const text = `Having fun with Amazon Stores memes! 🎭💰 Check it out:`;
+            const text = `Having fun with shared Amazon Stores memes! 🎭💰 Check it out:`;
             const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(currentUrl)}`;
             window.open(url, '_blank');
         }
@@ -1124,8 +887,6 @@
                 previousMeme();
             } else if (e.key === 'ArrowRight') {
                 nextMeme();
-            } else if (e.key === 'r' || e.key === 'R') {
-                randomMeme();
             }
         });
     </script>
