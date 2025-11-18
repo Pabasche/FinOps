@@ -311,7 +311,7 @@
 
     <div class="container">
         <div class="header">
-            <div class="live-badge">🔴 SHARED MODE</div>
+            <div class="live-badge">🔴 LIVE NOW</div>
             <h1>Amazon Stores Meme Generator</h1>
             <p class="subtitle">The most fun way to share team memes!</p>
             <button onclick="showAdminLogin()" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9em;">🔒 Admin</button>
@@ -869,7 +869,7 @@
         }
 
         // Upload form handler
-        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const fileInput = document.getElementById('imageFile');
@@ -887,7 +887,7 @@
             }
             
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 const newMeme = {
                     type: 'image',
                     url: e.target.result,
