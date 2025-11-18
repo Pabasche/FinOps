@@ -529,20 +529,47 @@
 
     <script>
         // Shared storage configuration
+        const ACCESS_KEY = '691c6234ae596e708f60c1df';
         const API_KEY = '$2a$10$LCiT4iNH2URUwmLIgQoIFejusShCL1DVcK4tyWhPx85cW30Fyb9SG';
-        const BIN_ID = '676b8b8ead19ca34f8d4b8c7';
-        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
         
         let memes = [];
         let currentMemeIndex = 0;
         let isAdmin = false;
         let userVotes = JSON.parse(localStorage.getItem('userVotes')) || {};
 
+        // Create bin and get ID
+        let BIN_ID = localStorage.getItem('memeBinId');
+        
+        async function createBin() {
+            try {
+                const response = await fetch('https://api.jsonbin.io/v3/b', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Access-Key': ACCESS_KEY
+                    },
+                    body: JSON.stringify({ memes: [] })
+                });
+                const data = await response.json();
+                BIN_ID = data.metadata.id;
+                localStorage.setItem('memeBinId', BIN_ID);
+                return BIN_ID;
+            } catch (error) {
+                console.error('Failed to create bin:', error);
+                return null;
+            }
+        }
+
         // Load memes from shared storage
         async function loadSharedMemes() {
             try {
-                const response = await fetch(API_URL + '/latest', {
-                    headers: { 'X-Master-Key': API_KEY }
+                if (!BIN_ID) {
+                    BIN_ID = await createBin();
+                    if (!BIN_ID) throw new Error('No bin available');
+                }
+                
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Access-Key': ACCESS_KEY }
                 });
                 const data = await response.json();
                 memes = data.record.memes || [];
@@ -560,16 +587,18 @@
         // Save memes to shared storage
         async function saveSharedMemes() {
             try {
-                await fetch(API_URL, {
+                if (!BIN_ID) {
+                    BIN_ID = await createBin();
+                    if (!BIN_ID) throw new Error('No bin available');
+                }
+                
+                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Master-Key': API_KEY
+                        'X-Access-Key': ACCESS_KEY
                     },
-                    body: JSON.stringify({
-                        memes: memes,
-                        lastUpdated: new Date().toISOString()
-                    })
+                    body: JSON.stringify({ memes: memes })
                 });
                 localStorage.setItem('finopsMemes', JSON.stringify(memes));
             } catch (error) {
