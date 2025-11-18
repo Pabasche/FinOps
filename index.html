@@ -293,6 +293,22 @@
             transform: translateY(0);
         }
 
+        .loading-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -326,13 +342,21 @@
                         <div>Click "Upload Your Meme" below</div>
                     </div>
                     <button onclick="previousMeme()" style="position: absolute; top: 10px; left: 10px; background: rgba(102, 126, 234, 0.9); color: white; border: none; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 10;">←</button>
-                    <button onclick="showCategorySelector()" style="position: absolute; top: 10px; left: 40%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">🟡 Team</button>
-                    <button onclick="showTypeSelector()" style="position: absolute; top: 10px; left: 60%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">⭐ Type</button>
+                    <button onclick="showCategorySelector()" style="position: absolute; top: 10px; left: 33%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">🟡 Team</button>
+                    <button onclick="showTypeSelector()" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">⭐ Type</button>
+                    <button id="topRankedBtn" onclick="toggleTopRanked()" style="position: absolute; top: 10px; left: 67%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">🏆 Top</button>
                     <button onclick="nextMeme()" style="position: absolute; top: 10px; right: 10px; background: rgba(102, 126, 234, 0.9); color: white; border: none; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 10;">→</button>
 
                     <button id="deleteBtn" onclick="deleteMeme()" style="display: none; position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em; z-index: 10;">🗑️ Delete</button>
+                    
+                    <!-- Meme Counter and Rank -->
+                    <div id="memeCounter" style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; z-index: 10;"></div>
+                    <div id="memeRank" style="position: absolute; bottom: 10px; right: 10px; background: rgba(16, 185, 129, 0.9); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: bold; z-index: 10; display: none;"></div>
                 </div>
-                <div id="memeCreator" style="text-align: center; font-size: 0.8em; color: #999; margin-top: 5px; margin-bottom: 10px;"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px; margin-bottom: 10px;">
+                    <div id="memeCreator" style="text-align: left; font-size: 0.8em; color: #999;"></div>
+                    <div id="totalVotes" style="text-align: right; font-size: 0.85em; color: #667eea; font-weight: 600;"></div>
+                </div>
 
                 <div class="vote-section">
                     <h3>Rate this meme:</h3>
@@ -456,8 +480,8 @@
                     </select>
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Your Name (optional):</label>
-                    <input type="text" id="uploaderName" placeholder="Enter your name" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Your Login (optional):</label>
+                    <input type="text" id="uploaderName" placeholder="Enter your login" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
                 </div>
                 <div style="display: flex; gap: 10px;">
                     <button type="submit" style="flex: 1; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Upload Meme</button>
@@ -499,8 +523,8 @@
                     </select>
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Your Name (optional):</label>
-                    <input type="text" id="gifUploaderName" placeholder="Enter your name" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Your Login (optional):</label>
+                    <input type="text" id="gifUploaderName" placeholder="Enter your login" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
                 </div>
                 <div style="display: flex; gap: 10px;">
                     <button type="submit" style="flex: 1; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Add GIF</button>
@@ -528,31 +552,45 @@
     </div>
 
     <script>
-        // Shared storage configuration
-        const ACCESS_KEY = '691c6234ae596e708f60c1df';
-        const API_KEY = '$2a$10$LCiT4iNH2URUwmLIgQoIFejusShCL1DVcK4tyWhPx85cW30Fyb9SG';
-        
-        // Fixed shared bin ID for all users
-        const BIN_ID = '677b8b8ead19ca34f8c5b8b8';
+        // Supabase configuration
+        const SUPABASE_URL = 'https://ngmjijxpbktehobbyoch.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5nbWppanhwYmt0ZWhvYmJ5b2NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0ODE3MjUsImV4cCI6MjA3OTA1NzcyNX0.cN1UqEo0zvkOyVbllHnmJGm07Bgb7oMr-BeHafpPXts';
         
         let memes = [];
         let currentMemeIndex = 0;
         let isAdmin = false;
         let userVotes = JSON.parse(localStorage.getItem('userVotes')) || {};
+        let isTopRankedMode = false;
+        let sortedMemes = [];
 
-        // Load memes from shared storage
+        // Load memes from Supabase
         async function loadSharedMemes() {
             try {
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    headers: { 'X-Access-Key': ACCESS_KEY }
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/memes?select=*&order=timestamp.asc`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
                 });
                 
                 if (response.ok) {
-                    const data = await response.json();
-                    memes = data.record.memes || [];
+                    memes = await response.json();
+                    console.log('Loaded memes from Supabase:', memes.length);
+                    if (memes.length === 0) {
+                        console.log('No memes in database yet. Upload your first meme!');
+                    }
                 } else {
-                    // If bin doesn't exist, create it
-                    await initializeSharedBin();
+                    const errorText = await response.text();
+                    console.error('Failed to load from Supabase:', response.status, errorText);
+                    
+                    if (response.status === 401 || response.status === 403) {
+                        console.error('⚠️ SUPABASE RLS ERROR: You need to disable Row Level Security or add policies!');
+                        console.error('Go to Supabase Dashboard → Authentication → Policies → Disable RLS on "memes" table');
+                        showNotification('⚠️ Database access denied. Check RLS policies!');
+                    } else {
+                        showNotification('Failed to load memes from database');
+                    }
+                    memes = JSON.parse(localStorage.getItem('finopsMemes')) || [];
                 }
                 
                 displayCurrentMeme();
@@ -560,49 +598,107 @@
                 updateActivityFeed();
                 updatePopularCategories();
             } catch (error) {
-                console.error('Loading from cloud failed, using local storage:', error);
+                console.error('Loading from Supabase failed:', error);
+                showNotification('Error connecting to database');
                 memes = JSON.parse(localStorage.getItem('finopsMemes')) || [];
                 displayCurrentMeme();
             }
         }
 
-        // Initialize shared bin if it doesn't exist
-        async function initializeSharedBin() {
+        // Save a new meme to Supabase
+        async function saveNewMeme(meme) {
             try {
-                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                    method: 'PUT',
+                console.log('Saving meme to Supabase:', meme);
+                console.log('Meme data as JSON:', JSON.stringify(meme));
+                
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/memes`, {
+                    method: 'POST',
                     headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
                         'Content-Type': 'application/json',
-                        'X-Access-Key': ACCESS_KEY
+                        'Prefer': 'return=representation'
                     },
-                    body: JSON.stringify({ memes: [] })
+                    body: JSON.stringify(meme)
                 });
-                memes = [];
+                
+                if (response.ok) {
+                    const savedMeme = await response.json();
+                    console.log('Meme saved successfully:', savedMeme[0]);
+                    return savedMeme[0];
+                } else {
+                    const errorText = await response.text();
+                    console.error('❌ Failed to save to Supabase:');
+                    console.error('Status:', response.status);
+                    console.error('Error:', errorText);
+                    console.error('Data sent:', meme);
+                    
+                    // Try to parse error for better message
+                    try {
+                        const errorJson = JSON.parse(errorText);
+                        console.error('Parsed error:', errorJson);
+                        if (errorJson.message) {
+                            showNotification(`❌ Database error: ${errorJson.message}`);
+                        }
+                    } catch (e) {
+                        // Error text is not JSON
+                    }
+                    
+                    return null;
+                }
             } catch (error) {
-                console.error('Failed to initialize shared bin:', error);
+                console.error('Saving to Supabase failed:', error);
+                return null;
             }
         }
 
-        // Save memes to shared storage
-        async function saveSharedMemes() {
+        // Update meme votes in Supabase
+        async function updateMemeVotes(memeId, votes) {
             try {
-                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                    method: 'PUT',
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/memes?id=eq.${memeId}`, {
+                    method: 'PATCH',
                     headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
                         'Content-Type': 'application/json',
-                        'X-Access-Key': ACCESS_KEY
+                        'Prefer': 'return=representation'
                     },
-                    body: JSON.stringify({ memes: memes })
+                    body: JSON.stringify({ votes: votes })
                 });
-                localStorage.setItem('finopsMemes', JSON.stringify(memes));
+                
+                if (!response.ok) {
+                    console.error('Failed to update votes in Supabase:', response.statusText);
+                }
             } catch (error) {
-                console.error('Saving to cloud failed, using local storage:', error);
-                localStorage.setItem('finopsMemes', JSON.stringify(memes));
+                console.error('Updating votes in Supabase failed:', error);
+            }
+        }
+
+        // Delete meme from Supabase
+        async function deleteMemeFromSupabase(memeId) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/memes?id=eq.${memeId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    console.error('Failed to delete from Supabase:', response.statusText);
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Deleting from Supabase failed:', error);
+                return false;
             }
         }
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('App initialized, loading memes...');
             loadSharedMemes();
             updateCurrentUrl();
             setInterval(loadSharedMemes, 15000); // Auto-refresh every 15 seconds
@@ -628,16 +724,25 @@
                 return;
             }
 
-            const meme = memes[currentMemeIndex];
+            // Get the correct meme based on mode
+            let meme;
+            if (isTopRankedMode && sortedMemes.length > 0) {
+                meme = sortedMemes[currentMemeIndex].meme;
+            } else {
+                meme = memes[currentMemeIndex];
+            }
 
             deleteBtn.style.display = isAdmin ? 'block' : 'none';
 
             if (meme.type === 'gif') {
+                const textOverlay = meme.text ? `
+                    <div style="background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 15px; font-size: 1.1em; font-weight: bold; text-align: center; margin: 50px 10px 10px 10px; word-wrap: break-word; box-sizing: border-box;">
+                        ${meme.text}
+                    </div>
+                ` : '';
                 memeImage.innerHTML = `
                     <div style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; padding: 0;">
-                        <div style="background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 15px; font-size: 1.1em; font-weight: bold; text-align: center; margin: 50px 10px 10px 10px; word-wrap: break-word; box-sizing: border-box;">
-                            ${meme.text}
-                        </div>
+                        ${textOverlay}
                         <img src="${meme.url}" style="width: 100%; flex: 1; object-fit: contain; border-radius: 10px;" alt="GIF">
                     </div>
                 `;
@@ -655,6 +760,32 @@
                 creatorElement.textContent = `by ${meme.uploader}`;
             } else {
                 creatorElement.textContent = '';
+            }
+
+            // Update meme counter
+            const counterElement = document.getElementById('memeCounter');
+            if (isTopRankedMode && sortedMemes.length > 0) {
+                counterElement.textContent = `${currentMemeIndex + 1} of ${sortedMemes.length}`;
+            } else {
+                counterElement.textContent = `${currentMemeIndex + 1} of ${memes.length}`;
+            }
+
+            // Update rank display (only in Top Ranked mode)
+            const rankElement = document.getElementById('memeRank');
+            if (isTopRankedMode && sortedMemes.length > 0) {
+                rankElement.textContent = `#${currentMemeIndex + 1} Rank`;
+                rankElement.style.display = 'block';
+            } else {
+                rankElement.style.display = 'none';
+            }
+
+            // Update total votes display
+            const totalVotesElement = document.getElementById('totalVotes');
+            const totalVotes = meme.votes ? Object.values(meme.votes).reduce((sum, count) => sum + count, 0) : 0;
+            if (totalVotes > 0) {
+                totalVotesElement.textContent = `🔥 ${totalVotes} total vote${totalVotes !== 1 ? 's' : ''}`;
+            } else {
+                totalVotesElement.textContent = '';
             }
         }
 
@@ -691,26 +822,46 @@
                 return;
             }
 
-            const voteKey = `${currentMemeIndex}-${type}`;
+            // Get the correct meme based on mode
+            let currentMeme;
+            if (isTopRankedMode && sortedMemes.length > 0) {
+                currentMeme = sortedMemes[currentMemeIndex].meme;
+            } else {
+                currentMeme = memes[currentMemeIndex];
+            }
+
+            const voteKey = `${currentMeme.id}-${type}`;
             
             if (userVotes[voteKey]) {
                 showNotification('You already voted on this meme!');
                 return;
             }
 
-            if (!memes[currentMemeIndex].votes) {
-                memes[currentMemeIndex].votes = {};
+            if (!currentMeme.votes) {
+                currentMeme.votes = {};
             }
             
-            memes[currentMemeIndex].votes[type] = (memes[currentMemeIndex].votes[type] || 0) + 1;
+            currentMeme.votes[type] = (currentMeme.votes[type] || 0) + 1;
             userVotes[voteKey] = true;
             
             localStorage.setItem('userVotes', JSON.stringify(userVotes));
-            await saveSharedMemes();
+            await updateMemeVotes(currentMeme.id, currentMeme.votes);
             
-            updateVoteDisplay(memes[currentMemeIndex]);
+            // Recalculate sorted memes if in Top Ranked mode
+            if (isTopRankedMode) {
+                const currentMemeId = currentMeme.id;
+                sortedMemes = memes.map((meme, index) => {
+                    const totalVotes = meme.votes ? Object.values(meme.votes).reduce((sum, count) => sum + count, 0) : 0;
+                    return { meme, originalIndex: index, totalVotes };
+                }).sort((a, b) => b.totalVotes - a.totalVotes);
+                
+                // Find the new position of the current meme
+                currentMemeIndex = sortedMemes.findIndex(item => item.meme.id === currentMemeId);
+            }
+            
+            updateVoteDisplay(currentMeme);
             updateStats();
-            addActivity(`Someone voted ${getEmojiForType(type)} on a ${memes[currentMemeIndex].category}`);
+            addActivity(`Someone voted ${getEmojiForType(type)} on a ${currentMeme.category}`);
             showNotification(`Voted ${getEmojiForType(type)}! Thanks for the feedback!`);
         }
 
@@ -728,14 +879,26 @@
 
         function nextMeme() {
             if (memes.length === 0) return;
-            currentMemeIndex = (currentMemeIndex + 1) % memes.length;
+            
+            if (isTopRankedMode) {
+                currentMemeIndex = (currentMemeIndex + 1) % sortedMemes.length;
+            } else {
+                currentMemeIndex = (currentMemeIndex + 1) % memes.length;
+            }
+            
             displayCurrentMeme();
             updateCurrentUrl();
         }
 
         function previousMeme() {
             if (memes.length === 0) return;
-            currentMemeIndex = currentMemeIndex === 0 ? memes.length - 1 : currentMemeIndex - 1;
+            
+            if (isTopRankedMode) {
+                currentMemeIndex = currentMemeIndex === 0 ? sortedMemes.length - 1 : currentMemeIndex - 1;
+            } else {
+                currentMemeIndex = currentMemeIndex === 0 ? memes.length - 1 : currentMemeIndex - 1;
+            }
+            
             displayCurrentMeme();
             updateCurrentUrl();
         }
@@ -891,8 +1054,115 @@
             };
         }
 
+        // Toggle Top Ranked mode
+        function toggleTopRanked() {
+            if (memes.length === 0) {
+                showNotification('No memes available yet!');
+                return;
+            }
+
+            isTopRankedMode = !isTopRankedMode;
+            const btn = document.getElementById('topRankedBtn');
+
+            if (isTopRankedMode) {
+                // Calculate total votes for each meme and sort
+                sortedMemes = memes.map((meme, index) => {
+                    const totalVotes = meme.votes ? Object.values(meme.votes).reduce((sum, count) => sum + count, 0) : 0;
+                    return { meme, originalIndex: index, totalVotes };
+                }).sort((a, b) => b.totalVotes - a.totalVotes);
+
+                // Show the top ranked meme
+                currentMemeIndex = 0;
+                btn.style.background = '#10b981 !important';
+                displayCurrentMeme();
+                showNotification('🏆 Showing top ranked memes!');
+            } else {
+                // Go back to random mode
+                sortedMemes = [];
+                const randomIndex = Math.floor(Math.random() * memes.length);
+                currentMemeIndex = randomIndex;
+                btn.style.background = '#2d3748 !important';
+                displayCurrentMeme();
+                showNotification('🔀 Back to random mode!');
+            }
+        }
+
+        // Compress image before upload
+        async function compressImage(file, maxWidth = 1200, quality = 0.8) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Calculate new dimensions
+                        if (width > maxWidth) {
+                            height = (height * maxWidth) / width;
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob(
+                            (blob) => {
+                                resolve(new File([blob], file.name, {
+                                    type: 'image/jpeg',
+                                    lastModified: Date.now()
+                                }));
+                            },
+                            'image/jpeg',
+                            quality
+                        );
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Upload image to Supabase Storage
+        async function uploadImageToStorage(file) {
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+                const filePath = fileName;
+
+                console.log('Uploading image to storage:', fileName);
+
+                const response = await fetch(`${SUPABASE_URL}/storage/v1/object/Meme library/${filePath}`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': file.type
+                    },
+                    body: file
+                });
+
+                if (response.ok) {
+                    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/Meme library/${filePath}`;
+                    console.log('Image uploaded successfully:', publicUrl);
+                    return publicUrl;
+                } else {
+                    const errorText = await response.text();
+                    console.error('Failed to upload image:', response.status, errorText);
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                return null;
+            }
+        }
+
         // Upload form handler
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const fileInput = document.getElementById('imageFile');
@@ -908,21 +1178,41 @@
                 showNotification('Please select a team!');
                 return;
             }
+
+            // Show loading notification with spinner
+            showNotification('Compressing image...', true, 0);
             
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                const newMeme = {
-                    type: 'image',
-                    url: e.target.result,
-                    category: category,
-                    uploader: uploaderName,
-                    timestamp: new Date().toISOString(),
-                    votes: {}
-                };
-                
-                memes.push(newMeme);
-                await saveSharedMemes();
-                
+            // Compress image first
+            const compressedFile = await compressImage(fileInput.files[0]);
+            const originalSize = (fileInput.files[0].size / 1024 / 1024).toFixed(2);
+            const compressedSize = (compressedFile.size / 1024 / 1024).toFixed(2);
+            console.log(`Image compressed: ${originalSize}MB → ${compressedSize}MB`);
+            
+            showNotification('Uploading image...', true, 0);
+            
+            // Upload compressed image to Supabase Storage
+            const imageUrl = await uploadImageToStorage(compressedFile);
+            
+            hideNotification();
+            
+            if (!imageUrl) {
+                showNotification('❌ Failed to upload image. Please try again.');
+                return;
+            }
+
+            const newMeme = {
+                type: 'image',
+                url: imageUrl,
+                text: null,
+                category: category,
+                uploader: uploaderName,
+                timestamp: new Date().toISOString(),
+                votes: {}
+            };
+            
+            const savedMeme = await saveNewMeme(newMeme);
+            if (savedMeme) {
+                await loadSharedMemes();
                 currentMemeIndex = memes.length - 1;
                 displayCurrentMeme();
                 updateCurrentUrl();
@@ -932,9 +1222,9 @@
                 
                 closeUploadForm();
                 showNotification('🎉 Meme uploaded successfully!');
-            };
-            
-            reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                showNotification('❌ Failed to save meme. Please try again.');
+            }
         });
 
         // GIF form handler
@@ -946,33 +1236,41 @@
             const category = document.getElementById('gifCategory').value;
             const uploaderName = document.getElementById('gifUploaderName').value || 'Anonymous';
             
-            if (!gifUrl || !gifText || !category) {
+            if (!gifUrl || !category) {
                 showNotification('Please fill in all required fields!');
                 return;
             }
+
+            showNotification('Saving GIF...', true, 0);
             
             const newMeme = {
                 type: 'gif',
                 url: gifUrl,
-                text: gifText,
+                text: gifText || null,
                 category: category,
                 uploader: uploaderName,
                 timestamp: new Date().toISOString(),
                 votes: {}
             };
             
-            memes.push(newMeme);
-            await saveSharedMemes();
+            const savedMeme = await saveNewMeme(newMeme);
             
-            currentMemeIndex = memes.length - 1;
-            displayCurrentMeme();
-            updateCurrentUrl();
-            updateStats();
-            updatePopularCategories();
-            addActivity(`${uploaderName} added a new GIF ${category}`);
+            hideNotification();
             
-            closeGifForm();
-            showNotification('🎉 GIF added successfully!');
+            if (savedMeme) {
+                await loadSharedMemes();
+                currentMemeIndex = memes.length - 1;
+                displayCurrentMeme();
+                updateCurrentUrl();
+                updateStats();
+                updatePopularCategories();
+                addActivity(`${uploaderName} added a new GIF ${category}`);
+                
+                closeGifForm();
+                showNotification('🎉 GIF added successfully!');
+            } else {
+                showNotification('❌ Failed to add GIF. Please try again.');
+            }
         });
 
         // Admin form handler
@@ -996,19 +1294,24 @@
             
             if (confirm('Are you sure you want to delete this meme?')) {
                 const deletedMeme = memes[currentMemeIndex];
-                memes.splice(currentMemeIndex, 1);
-                await saveSharedMemes();
+                const success = await deleteMemeFromSupabase(deletedMeme.id);
                 
-                if (currentMemeIndex >= memes.length) {
-                    currentMemeIndex = Math.max(0, memes.length - 1);
+                if (success) {
+                    await loadSharedMemes();
+                    
+                    if (currentMemeIndex >= memes.length) {
+                        currentMemeIndex = Math.max(0, memes.length - 1);
+                    }
+                    
+                    displayCurrentMeme();
+                    updateCurrentUrl();
+                    updateStats();
+                    updatePopularCategories();
+                    addActivity(`Admin deleted a ${deletedMeme.category}`);
+                    showNotification('🗑️ Meme deleted!');
+                } else {
+                    showNotification('❌ Failed to delete meme. Please try again.');
                 }
-                
-                displayCurrentMeme();
-                updateCurrentUrl();
-                updateStats();
-                updatePopularCategories();
-                addActivity(`Admin deleted a ${deletedMeme.category}`);
-                showNotification('🗑️ Meme deleted!');
             }
         }
 
@@ -1131,14 +1434,27 @@
             window.open(qrUrl, '_blank');
         }
 
-        function showNotification(message) {
+        function showNotification(message, showSpinner = false, duration = 3000) {
             const notification = document.getElementById('notification');
-            notification.textContent = message;
+            
+            if (showSpinner) {
+                notification.innerHTML = `<span class="loading-spinner"></span>${message}`;
+            } else {
+                notification.textContent = message;
+            }
+            
             notification.classList.add('show');
             
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+            if (duration > 0) {
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, duration);
+            }
+        }
+
+        function hideNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.remove('show');
         }
 
         // Keyboard navigation
