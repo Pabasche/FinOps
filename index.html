@@ -64,23 +64,25 @@
 
         .meme-section {
             background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         #memeImage {
             width: 100%;
             aspect-ratio: 1;
-            border-radius: 10px;
+            border-radius: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            padding: 40px;
-            margin-bottom: 5px;
-            background: linear-gradient(45deg, #FF6B35, #ff8c5f);
+            justify-content: center;
+            padding: 0;
+            margin-bottom: 0;
+            background: #f8f9fa;
             cursor: pointer;
+            overflow: hidden;
+            position: relative;
         }
 
         .meme-text-top, .meme-text-bottom {
@@ -309,6 +311,20 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Modern button hover effects */
+        button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        select:hover {
+            filter: brightness(1.1);
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -335,27 +351,60 @@
 
         <div class="main-content">
             <div class="meme-section">
+                <!-- Control Bar - Flexbox layout, no overlapping -->
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+                    <button onclick="previousMeme()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 16px; border-radius: 12px; cursor: pointer; font-size: 1.1em; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); transition: all 0.3s; font-weight: 600; flex-shrink: 0;">←</button>
+                    
+                    
+                    <button id="randomBtn" onclick="setRandomMode()" style="background: #10b981; color: white; border: none; padding: 10px 16px; height: 42px; border-radius: 12px; cursor: pointer; font-size: 0.85em; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); transition: all 0.3s; font-weight: 600; flex-shrink: 0;">🔀 Random</button>
+                    <button id="topRankedBtn" onclick="setTopRankedMode()" style="background: #2d3748; color: white; border: none; padding: 10px 16px; height: 42px; border-radius: 12px; cursor: pointer; font-size: 0.85em; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transition: all 0.3s; font-weight: 600; flex-shrink: 0;">🏆 Top</button>
+                    <button id="recentBtn" onclick="setRecentMode()" style="background: #2d3748; color: white; border: none; padding: 10px 16px; height: 42px; border-radius: 12px; cursor: pointer; font-size: 0.85em; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transition: all 0.3s; font-weight: 600; flex-shrink: 0;">🕒 Recent</button>
+                    
+                    
+                    <select id="teamFilter" onchange="applyFilters()" style="background: #2d3748; color: white; border: none; padding: 10px 14px; height: 42px; border-radius: 12px; cursor: pointer; font-size: 0.85em; font-weight: 600; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transition: all 0.3s; flex-shrink: 0;">
+                        <option value="ALL">🟡 Team</option>
+                        <option value="FinOPS">FinOPS</option>
+                        <option value="Operations">Operations</option>
+                        <option value="DSP team">DSP team</option>
+                        <option value="PXT">PXT</option>
+                        <option value="ACES">ACES</option>
+                        <option value="Retail">Retail</option>
+                        <option value="Advertising">Advertising</option>
+                        <option value="Amazon Business">Amazon Business</option>
+                    </select>
+                    
+                    
+                    <select id="typeFilter" onchange="applyFilters()" style="background: #2d3748; color: white; border: none; padding: 10px 14px; height: 42px; border-radius: 12px; cursor: pointer; font-size: 0.85em; font-weight: 600; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transition: all 0.3s; flex-shrink: 0;">
+                        <option value="ALL">⭐ Type</option>
+                        <option value="fire">� Fire</o/ption>
+                        <option value="laugh">😂 Laugh</option>
+                        <option value="heart">❤️ Heart</option>
+                        <option value="mind-blown">🤯 Mind Blown</option>
+                        <option value="thumbs-up">👍 Thumbs Up</option>
+                        <option value="facepalm">🤦‍♂️ Facepalm</option>
+                    </select>
+                    
+                    <button onclick="nextMeme()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 16px; border-radius: 12px; cursor: pointer; font-size: 1.1em; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); transition: all 0.3s; font-weight: 600; margin-left: auto; flex-shrink: 0;">→</button>
+
+                    <button id="deleteBtn" onclick="deleteMeme()" style="display: none; background: #ef4444; color: white; border: none; padding: 10px 16px; height: 42px; border-radius: 12px; cursor: pointer; font-size: 0.85em; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); font-weight: 600; flex-shrink: 0;">🗑️ Delete</button>
+                </div>
+                
+                <!-- Meme Image Container -->
                 <div style="position: relative;">
                     <div id="memeImage" onclick="nextMeme()" style="background: #f8f9fa; color: #666; font-size: 1.2em; text-align: center;">
                         <div>📤</div>
                         <div>Upload your first meme to get started!</div>
                         <div>Click "Upload Your Meme" below</div>
                     </div>
-                    <button onclick="previousMeme()" style="position: absolute; top: 10px; left: 10px; background: rgba(102, 126, 234, 0.9); color: white; border: none; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 10;">←</button>
-                    <button onclick="showCategorySelector()" style="position: absolute; top: 10px; left: 33%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">🟡 Team</button>
-                    <button onclick="showTypeSelector()" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">⭐ Type</button>
-                    <button id="topRankedBtn" onclick="toggleTopRanked()" style="position: absolute; top: 10px; left: 67%; transform: translateX(-50%); background: #2d3748 !important; color: white; border: none; padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.9em; z-index: 10;">🏆 Top</button>
-                    <button onclick="nextMeme()" style="position: absolute; top: 10px; right: 10px; background: rgba(102, 126, 234, 0.9); color: white; border: none; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 10;">→</button>
-
-                    <button id="deleteBtn" onclick="deleteMeme()" style="display: none; position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em; z-index: 10;">🗑️ Delete</button>
                     
-                    <!-- Meme Counter and Rank -->
-                    <div id="memeCounter" style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; z-index: 10;"></div>
-                    <div id="memeRank" style="position: absolute; bottom: 10px; right: 10px; background: rgba(16, 185, 129, 0.9); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: bold; z-index: 10; display: none;"></div>
+                    <!-- Meme Counter and Rank - Modern badges -->
+                    <div id="memeCounter" style="position: absolute; bottom: 12px; left: 12px; background: rgba(0,0,0,0.75); color: white; padding: 6px 14px; border-radius: 12px; font-size: 0.85em; z-index: 10; font-weight: 600; backdrop-filter: blur(10px);"></div>
+                    <div id="memeRank" style="position: absolute; bottom: 12px; right: 12px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 6px 14px; border-radius: 12px; font-size: 0.85em; font-weight: 700; z-index: 10; display: none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);"></div>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px; margin-bottom: 10px;">
-                    <div id="memeCreator" style="text-align: left; font-size: 0.8em; color: #999;"></div>
-                    <div id="totalVotes" style="text-align: right; font-size: 0.85em; color: #667eea; font-weight: 600;"></div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 8px; padding: 0 4px;">
+                    <div id="memeCreator" style="text-align: left; font-size: 0.85em; color: #6b7280; font-weight: 500;"></div>
+                    <div id="totalVotes" style="text-align: right; font-size: 0.9em; color: #667eea; font-weight: 700;"></div>
                 </div>
 
                 <div class="vote-section">
@@ -560,8 +609,11 @@
         let currentMemeIndex = 0;
         let isAdmin = false;
         let userVotes = JSON.parse(localStorage.getItem('userVotes')) || {};
-        let isTopRankedMode = false;
+        let sortMode = 'random'; // 'random', 'top', 'recent'
         let sortedMemes = [];
+        let filteredMemes = [];
+        let selectedTeam = 'ALL';
+        let selectedType = 'ALL';
 
         // Load memes from Supabase
         async function loadSharedMemes() {
@@ -699,6 +751,11 @@
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             console.log('App initialized, loading memes...');
+            
+            // Set Random mode as default
+            sortMode = 'random';
+            updateSortButtons();
+            
             loadSharedMemes();
             updateCurrentUrl();
             setInterval(loadSharedMemes, 15000); // Auto-refresh every 15 seconds
@@ -724,31 +781,33 @@
                 return;
             }
 
-            // Get the correct meme based on mode
+            // Get the correct meme based on mode and filters
+            const workingSet = (selectedTeam !== 'ALL' || selectedType !== 'ALL') ? filteredMemes : memes;
             let meme;
-            if (isTopRankedMode && sortedMemes.length > 0) {
+            
+            if ((sortMode === 'top' || sortMode === 'recent') && sortedMemes.length > 0) {
                 meme = sortedMemes[currentMemeIndex].meme;
             } else {
-                meme = memes[currentMemeIndex];
+                meme = workingSet[currentMemeIndex];
             }
 
             deleteBtn.style.display = isAdmin ? 'block' : 'none';
 
             if (meme.type === 'gif') {
                 const textOverlay = meme.text ? `
-                    <div style="background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 15px; font-size: 1.1em; font-weight: bold; text-align: center; margin: 50px 10px 10px 10px; word-wrap: break-word; box-sizing: border-box;">
+                    <div style="position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 8px 16px; border-radius: 12px; font-size: 1.05em; font-weight: bold; text-align: center; word-wrap: break-word; box-sizing: border-box; max-width: 90%; z-index: 5;">
                         ${meme.text}
                     </div>
                 ` : '';
                 memeImage.innerHTML = `
-                    <div style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; padding: 0;">
+                    <div style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <img src="${meme.url}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 15px;" alt="GIF">
                         ${textOverlay}
-                        <img src="${meme.url}" style="width: 100%; flex: 1; object-fit: contain; border-radius: 10px;" alt="GIF">
                     </div>
                 `;
                 memeImage.style.background = 'transparent';
             } else {
-                memeImage.innerHTML = `<img src="${meme.url}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;" alt="Meme">`;
+                memeImage.innerHTML = `<img src="${meme.url}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 15px;" alt="Meme">`;
                 memeImage.style.background = 'transparent';
             }
 
@@ -764,15 +823,17 @@
 
             // Update meme counter
             const counterElement = document.getElementById('memeCounter');
-            if (isTopRankedMode && sortedMemes.length > 0) {
+            const workingSetForCounter = (selectedTeam !== 'ALL' || selectedType !== 'ALL') ? filteredMemes : memes;
+            
+            if ((sortMode === 'top' || sortMode === 'recent') && sortedMemes.length > 0) {
                 counterElement.textContent = `${currentMemeIndex + 1} of ${sortedMemes.length}`;
             } else {
-                counterElement.textContent = `${currentMemeIndex + 1} of ${memes.length}`;
+                counterElement.textContent = `${currentMemeIndex + 1} of ${workingSetForCounter.length}`;
             }
 
             // Update rank display (only in Top Ranked mode)
             const rankElement = document.getElementById('memeRank');
-            if (isTopRankedMode && sortedMemes.length > 0) {
+            if (sortMode === 'top' && sortedMemes.length > 0) {
                 rankElement.textContent = `#${currentMemeIndex + 1} Rank`;
                 rankElement.style.display = 'block';
             } else {
@@ -832,25 +893,37 @@
 
             const voteKey = `${currentMeme.id}-${type}`;
             
-            if (userVotes[voteKey]) {
-                showNotification('You already voted on this meme!');
-                return;
-            }
-
             if (!currentMeme.votes) {
                 currentMeme.votes = {};
             }
+
+            // Toggle vote: if already voted, remove it; otherwise add it
+            if (userVotes[voteKey]) {
+                // Remove vote
+                currentMeme.votes[type] = Math.max(0, (currentMeme.votes[type] || 0) - 1);
+                delete userVotes[voteKey];
+                
+                localStorage.setItem('userVotes', JSON.stringify(userVotes));
+                await updateMemeVotes(currentMeme.id, currentMeme.votes);
+                
+                showNotification(`Removed ${getEmojiForType(type)} vote`);
+            } else {
+                // Add vote
+                currentMeme.votes[type] = (currentMeme.votes[type] || 0) + 1;
+                userVotes[voteKey] = true;
+                
+                localStorage.setItem('userVotes', JSON.stringify(userVotes));
+                await updateMemeVotes(currentMeme.id, currentMeme.votes);
+                
+                addActivity(`Someone voted ${getEmojiForType(type)} on a ${currentMeme.category}`);
+                showNotification(`Voted ${getEmojiForType(type)}! Thanks for the feedback!`);
+            }
             
-            currentMeme.votes[type] = (currentMeme.votes[type] || 0) + 1;
-            userVotes[voteKey] = true;
-            
-            localStorage.setItem('userVotes', JSON.stringify(userVotes));
-            await updateMemeVotes(currentMeme.id, currentMeme.votes);
-            
-            // Recalculate sorted memes if in Top Ranked mode
-            if (isTopRankedMode) {
+            // Recalculate sorted memes if in sorted mode
+            if (sortMode === 'top') {
                 const currentMemeId = currentMeme.id;
-                sortedMemes = memes.map((meme, index) => {
+                const workingSet = (selectedTeam !== 'ALL' || selectedType !== 'ALL') ? filteredMemes : memes;
+                sortedMemes = workingSet.map((meme, index) => {
                     const totalVotes = meme.votes ? Object.values(meme.votes).reduce((sum, count) => sum + count, 0) : 0;
                     return { meme, originalIndex: index, totalVotes };
                 }).sort((a, b) => b.totalVotes - a.totalVotes);
@@ -861,8 +934,6 @@
             
             updateVoteDisplay(currentMeme);
             updateStats();
-            addActivity(`Someone voted ${getEmojiForType(type)} on a ${currentMeme.category}`);
-            showNotification(`Voted ${getEmojiForType(type)}! Thanks for the feedback!`);
         }
 
         function getEmojiForType(type) {
@@ -880,10 +951,12 @@
         function nextMeme() {
             if (memes.length === 0) return;
             
-            if (isTopRankedMode) {
+            const workingSet = (selectedTeam !== 'ALL' || selectedType !== 'ALL') ? filteredMemes : memes;
+            
+            if ((sortMode === 'top' || sortMode === 'recent') && sortedMemes.length > 0) {
                 currentMemeIndex = (currentMemeIndex + 1) % sortedMemes.length;
             } else {
-                currentMemeIndex = (currentMemeIndex + 1) % memes.length;
+                currentMemeIndex = (currentMemeIndex + 1) % workingSet.length;
             }
             
             displayCurrentMeme();
@@ -893,10 +966,12 @@
         function previousMeme() {
             if (memes.length === 0) return;
             
-            if (isTopRankedMode) {
+            const workingSet = (selectedTeam !== 'ALL' || selectedType !== 'ALL') ? filteredMemes : memes;
+            
+            if ((sortMode === 'top' || sortMode === 'recent') && sortedMemes.length > 0) {
                 currentMemeIndex = currentMemeIndex === 0 ? sortedMemes.length - 1 : currentMemeIndex - 1;
             } else {
-                currentMemeIndex = currentMemeIndex === 0 ? memes.length - 1 : currentMemeIndex - 1;
+                currentMemeIndex = currentMemeIndex === 0 ? workingSet.length - 1 : currentMemeIndex - 1;
             }
             
             displayCurrentMeme();
@@ -936,155 +1011,155 @@
             document.getElementById('adminForm').reset();
         }
 
-        function showTypeSelector() {
-            if (memes.length === 0) {
-                showNotification('No memes available yet!');
-                return;
-            }
-            
-            const voteTypes = [
-                { key: 'ALL', emoji: '⭐', name: 'ALL' },
-                { key: 'fire', emoji: '🔥', name: 'Fire' },
-                { key: 'laugh', emoji: '😂', name: 'Laugh' },
-                { key: 'heart', emoji: '❤️', name: 'Heart' },
-                { key: 'mind-blown', emoji: '🤯', name: 'Mind Blown' },
-                { key: 'thumbs-up', emoji: '👍', name: 'Thumbs Up' },
-                { key: 'facepalm', emoji: '🤦‍♂️', name: 'Facepalm' }
-            ];
-            
-            let options = voteTypes.map(type => 
-                `<option value="${type.key}" ${type.key === 'ALL' ? 'selected' : ''}>${type.emoji} ${type.name}</option>`
-            ).join('');
-            
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;';
-            modal.innerHTML = `
-                <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%;">
-                    <h3 style="margin-bottom: 20px;">⭐ Select Type</h3>
-                    <select id="typeSelect" style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 1em; margin-bottom: 20px;">
-                        ${options}
-                    </select>
-                    <div>
-                        <button onclick="filterByType()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 10px; font-weight: 600;">Show Type</button>
-                        <button onclick="document.body.removeChild(this.closest('div').parentElement.parentElement)" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancel</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            
-            window.filterByType = function() {
-                const selectedType = document.getElementById('typeSelect').value;
-                
-                if (selectedType === 'ALL') {
-                    const randomIndex = Math.floor(Math.random() * memes.length);
-                    currentMemeIndex = randomIndex;
-                    displayCurrentMeme();
-                    document.body.removeChild(modal);
-                    showNotification('⭐ Showing all types!');
-                    return;
-                }
-                
-                const typeMemes = memes.filter(m => m.votes && m.votes[selectedType] && m.votes[selectedType] > 0);
-                if (typeMemes.length === 0) {
-                    showNotification(`No memes with ${selectedType} votes!`);
-                    return;
-                }
-                
-                const randomIndex = Math.floor(Math.random() * typeMemes.length);
-                const selectedMeme = typeMemes[randomIndex];
-                currentMemeIndex = memes.indexOf(selectedMeme);
-                displayCurrentMeme();
-                document.body.removeChild(modal);
-                const emoji = voteTypes.find(t => t.key === selectedType).emoji;
-                showNotification(`⭐ Showing ${emoji} rated memes!`);
-            };
-        }
 
-        function showCategorySelector() {
-            const allCategories = ['FinOPS', 'Operations', 'DSP team', 'PXT', 'ACES', 'Retail', 'Advertising', 'Amazon Business'];
-            const availableCategories = allCategories.filter(cat => memes.some(m => m.category === cat));
-            
-            if (memes.length === 0) {
-                showNotification('No memes available yet!');
-                return;
-            }
-            
-            let options = '<option value="ALL" selected>ALL</option>' + availableCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
-            
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;';
-            modal.innerHTML = `
-                <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%;">
-                    <h3 style="margin-bottom: 20px;">🟡 Select Team</h3>
-                    <select id="categorySelect" style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 1em; margin-bottom: 20px;">
-                        ${options}
-                    </select>
-                    <div>
-                        <button onclick="filterByCategory()" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 10px; font-weight: 600;">Show Team</button>
-                        <button onclick="document.body.removeChild(this.closest('div').parentElement.parentElement)" style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancel</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            
-            window.filterByCategory = function() {
-                const selectedCategory = document.getElementById('categorySelect').value;
-                
-                if (selectedCategory === 'ALL') {
-                    const randomIndex = Math.floor(Math.random() * memes.length);
-                    currentMemeIndex = randomIndex;
-                    displayCurrentMeme();
-                    document.body.removeChild(modal);
-                    showNotification('🟡 Showing all memes!');
-                    return;
-                }
-                
-                const categoryMemes = memes.filter(m => m.category === selectedCategory);
-                if (categoryMemes.length === 0) {
-                    showNotification(`No memes in ${selectedCategory} team!`);
-                    return;
-                }
-                
-                const randomIndex = Math.floor(Math.random() * categoryMemes.length);
-                const selectedMeme = categoryMemes[randomIndex];
-                currentMemeIndex = memes.indexOf(selectedMeme);
-                displayCurrentMeme();
-                document.body.removeChild(modal);
-                showNotification(`🟡 Showing ${selectedCategory} meme!`);
-            };
-        }
 
-        // Toggle Top Ranked mode
-        function toggleTopRanked() {
+        // Apply team and type filters
+        function applyFilters() {
+            selectedTeam = document.getElementById('teamFilter').value;
+            selectedType = document.getElementById('typeFilter').value;
+            
             if (memes.length === 0) {
-                showNotification('No memes available yet!');
                 return;
             }
 
-            isTopRankedMode = !isTopRankedMode;
-            const btn = document.getElementById('topRankedBtn');
+            // Start with all memes
+            filteredMemes = memes.slice();
 
-            if (isTopRankedMode) {
-                // Calculate total votes for each meme and sort
-                sortedMemes = memes.map((meme, index) => {
+            // Apply team filter
+            if (selectedTeam !== 'ALL') {
+                filteredMemes = filteredMemes.filter(m => m.category === selectedTeam);
+            }
+
+            // Apply type filter (memes with that vote type)
+            if (selectedType !== 'ALL') {
+                filteredMemes = filteredMemes.filter(m => m.votes && m.votes[selectedType] && m.votes[selectedType] > 0);
+            }
+
+            if (filteredMemes.length === 0) {
+                showNotification(`No memes found for ${selectedTeam !== 'ALL' ? selectedTeam : 'all teams'} with ${selectedType !== 'ALL' ? selectedType : 'all types'} votes`);
+                // Reset to show all
+                filteredMemes = memes.slice();
+                document.getElementById('teamFilter').value = 'ALL';
+                document.getElementById('typeFilter').value = 'ALL';
+                selectedTeam = 'ALL';
+                selectedType = 'ALL';
+                return;
+            }
+
+            // Show first filtered meme
+            currentMemeIndex = 0;
+            
+            // Re-sort filtered memes based on current sort mode
+            if (sortMode === 'top') {
+                sortedMemes = filteredMemes.map((meme, index) => {
                     const totalVotes = meme.votes ? Object.values(meme.votes).reduce((sum, count) => sum + count, 0) : 0;
                     return { meme, originalIndex: index, totalVotes };
                 }).sort((a, b) => b.totalVotes - a.totalVotes);
-
-                // Show the top ranked meme
-                currentMemeIndex = 0;
-                btn.style.background = '#10b981 !important';
-                displayCurrentMeme();
-                showNotification('🏆 Showing top ranked memes!');
-            } else {
-                // Go back to random mode
-                sortedMemes = [];
-                const randomIndex = Math.floor(Math.random() * memes.length);
-                currentMemeIndex = randomIndex;
-                btn.style.background = '#2d3748 !important';
-                displayCurrentMeme();
-                showNotification('🔀 Back to random mode!');
+            } else if (sortMode === 'recent') {
+                sortedMemes = filteredMemes.map((meme, index) => {
+                    return { meme, originalIndex: index, totalVotes: 0 };
+                }).sort((a, b) => new Date(b.meme.timestamp) - new Date(a.meme.timestamp));
             }
+
+            displayCurrentMeme();
+            
+            let filterMsg = '';
+            if (selectedTeam !== 'ALL' && selectedType !== 'ALL') {
+                filterMsg = `Showing ${selectedTeam} memes with ${selectedType} votes`;
+            } else if (selectedTeam !== 'ALL') {
+                filterMsg = `Showing ${selectedTeam} memes`;
+            } else if (selectedType !== 'ALL') {
+                filterMsg = `Showing memes with ${selectedType} votes`;
+            }
+            
+            if (filterMsg) {
+                showNotification(filterMsg);
+            }
+        }
+
+        // Get the current meme list based on filters and mode
+        function getCurrentMemeList() {
+            if (selectedTeam !== 'ALL' || selectedType !== 'ALL') {
+                // Filters are active
+                if (isTopRankedMode && sortedMemes.length > 0) {
+                    return sortedMemes;
+                }
+                return filteredMemes.map((meme, index) => ({ meme, originalIndex: index, totalVotes: 0 }));
+            } else {
+                // No filters
+                if (isTopRankedMode && sortedMemes.length > 0) {
+                    return sortedMemes;
+                }
+                return memes.map((meme, index) => ({ meme, originalIndex: index, totalVotes: 0 }));
+            }
+        }
+
+        // Set Random Mode (default)
+        function setRandomMode() {
+            if (memes.length === 0) return;
+            
+            sortMode = 'random';
+            updateSortButtons();
+            
+            const workingSet = (selectedTeam !== 'ALL' || selectedType !== 'ALL') ? filteredMemes : memes;
+            sortedMemes = [];
+            currentMemeIndex = Math.floor(Math.random() * workingSet.length);
+            displayCurrentMeme();
+            showNotification('🔀 Random mode');
+        }
+
+        // Set Top Ranked Mode
+        function setTopRankedMode() {
+            if (memes.length === 0) return;
+            
+            sortMode = 'top';
+            updateSortButtons();
+            
+            const workingSet = (selectedTeam !== 'ALL' || selectedType !== 'ALL') ? filteredMemes : memes;
+            
+            // Calculate total votes and sort by highest first
+            sortedMemes = workingSet.map((meme, index) => {
+                const totalVotes = meme.votes ? Object.values(meme.votes).reduce((sum, count) => sum + count, 0) : 0;
+                return { meme, originalIndex: index, totalVotes };
+            }).sort((a, b) => b.totalVotes - a.totalVotes);
+            
+            currentMemeIndex = 0;
+            displayCurrentMeme();
+            showNotification('🏆 Top ranked memes');
+        }
+
+        // Set Most Recent Mode
+        function setRecentMode() {
+            if (memes.length === 0) return;
+            
+            sortMode = 'recent';
+            updateSortButtons();
+            
+            const workingSet = (selectedTeam !== 'ALL' || selectedType !== 'ALL') ? filteredMemes : memes;
+            
+            // Sort by timestamp (most recent first)
+            sortedMemes = workingSet.map((meme, index) => {
+                return { meme, originalIndex: index, totalVotes: 0 };
+            }).sort((a, b) => new Date(b.meme.timestamp) - new Date(a.meme.timestamp));
+            
+            currentMemeIndex = 0;
+            displayCurrentMeme();
+            showNotification('🕒 Most recent memes');
+        }
+
+        // Update button styles based on active mode
+        function updateSortButtons() {
+            const randomBtn = document.getElementById('randomBtn');
+            const topBtn = document.getElementById('topRankedBtn');
+            const recentBtn = document.getElementById('recentBtn');
+            
+            // Active style
+            const activeStyle = 'background: #10b981; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);';
+            const inactiveStyle = 'background: #2d3748; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);';
+            
+            randomBtn.style.cssText = randomBtn.style.cssText.replace(/(background|box-shadow):[^;]+;?/g, '') + (sortMode === 'random' ? activeStyle : inactiveStyle);
+            topBtn.style.cssText = topBtn.style.cssText.replace(/(background|box-shadow):[^;]+;?/g, '') + (sortMode === 'top' ? activeStyle : inactiveStyle);
+            recentBtn.style.cssText = recentBtn.style.cssText.replace(/(background|box-shadow):[^;]+;?/g, '') + (sortMode === 'recent' ? activeStyle : inactiveStyle);
         }
 
         // Compress image before upload
